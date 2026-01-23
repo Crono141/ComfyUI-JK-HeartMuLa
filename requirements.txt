@@ -1,0 +1,3 @@
+torchtune>=0.4.0
+accelerate>=0.26.0
+vector-quantize-pytorch>=1.12.0
