@@ -10,14 +10,17 @@ A ComfyUI extension for music generation and lyrics transcription based on the [
 ## Installation
 
 1. Navigate to your ComfyUI `custom_nodes` folder:
+
    ```bash
    cd ComfyUI/custom_nodes
    ```
 2. Clone this repository:
+
    ```bash
    git clone https://github.com/BobRandomNumber/ComfyUI-HeartMuLa
    ```
 3. Install the dependencies:
+
    ```bash
    pip install -r requirements.txt
    ```
