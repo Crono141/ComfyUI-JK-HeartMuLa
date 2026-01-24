@@ -21,7 +21,7 @@ A ComfyUI extension for music generation and lyrics transcription based on the [
 2. Clone this repository:
 
    ```bash
-   git clone https://github.com/BobRandomNumber/ComfyUI-HeartMuLa
+   git clone https://github.com/BobRandomNumber/ComfyUI-HeartMuLa.git
    ```
 3. Install the dependencies:
 
