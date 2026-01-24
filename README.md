@@ -7,6 +7,10 @@ A ComfyUI extension for music generation and lyrics transcription based on the [
 - **Lyrics Transcription**: Automatic speech-to-text with support for long-form audio.
 - **Audio Post-Processing**: Integrated tools for normalization, stereo widening, and frequency filtering.
 
+![HeartMuLaGeneration](https://github.com/BobRandomNumber/ComfyUI-HeartMuLa/blob/main/assets/HeartMuLaGeneration.png)
+
+![HeartMuLaTranscription](https://github.com/BobRandomNumber/ComfyUI-HeartMuLa/blob/main/assets/HeartMuLaTranscription.png)
+
 ## Installation
 
 1. Navigate to your ComfyUI `custom_nodes` folder:
