@@ -6,7 +6,7 @@
   "nodes": [
     {
       "id": 2,
-      "type": "HeartMuLaLyricsTranscriber",
+      "type": "JKHeartMuLaLyricsTranscriber",
       "pos": [
         2710,
         470
@@ -40,7 +40,7 @@
         }
       ],
       "properties": {
-        "Node name for S&R": "HeartMuLaLyricsTranscriber"
+        "Node name for S&R": "JKHeartMuLaLyricsTranscriber"
       },
       "widgets_values": [
         256,
@@ -121,7 +121,7 @@
     },
     {
       "id": 1,
-      "type": "HeartMuLaTranscriptionLoader",
+      "type": "JKHeartMuLaTranscriptionLoader",
       "pos": [
         2340,
         470
@@ -144,7 +144,7 @@
         }
       ],
       "properties": {
-        "Node name for S&R": "HeartMuLaTranscriptionLoader"
+        "Node name for S&R": "JKHeartMuLaTranscriptionLoader"
       },
       "widgets_values": [
         "HeartMuLa",

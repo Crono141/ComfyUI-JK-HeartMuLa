@@ -1,4 +1,8 @@
+# heartlib / HeartMuLa generation + transcription deps (from ComfyUI-HeartMuLa)
 torchao>=0.9.0
 torchtune>=0.4.0
 accelerate>=0.26.0
 vector-quantize-pytorch>=1.12.0
+# MuQ-MuLan style-transfer deps (this fork's additions)
+muq
+librosa

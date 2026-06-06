@@ -6,7 +6,7 @@
   "nodes": [
     {
       "id": 15,
-      "type": "HeartMuLaMusicGenerator",
+      "type": "HMLStyleGenerator",
       "pos": [
         2530,
         430
@@ -37,7 +37,7 @@
       "properties": {
         "cnr_id": "ComfyUI-HeartMuLa",
         "ver": "c7a2e2c888673a944ab71443f63e63e3f45f7ff0",
-        "Node name for S&R": "HeartMuLaMusicGenerator"
+        "Node name for S&R": "HMLStyleGenerator"
       },
       "widgets_values": [
         "[Intro]\n\n[Verse]\nThe sun creeps in across the floor\nI hear the traffic outside the door\nThe coffee pot begins to hiss\nIt is another morning just like this\n\n[Prechorus]\nThe world keeps spinning round and round\nFeet are planted on the ground\nI find my rhythm in the sound\n\n[Chorus]\nEvery day the light returns\nEvery day the fire burns\nWe keep on walking down this street\nMoving to the same steady beat\nIt is the ordinary magic that we meet\n\n[Verse]\nThe hours tick deeply into noon\nChasing shadows,chasing the moon\nWork is done and the lights go low\nWatching the city start to glow\n\n[Bridge]\nIt is not always easy,not always bright\nSometimes we wrestle with the night\nBut we make it to the morning light\n\n[Chorus]\nEvery day the light returns\nEvery day the fire burns\nWe keep on walking down this street\nMoving to the same steady beat\n\n[Outro]\nJust another day\nEvery single day",
@@ -52,7 +52,7 @@
     },
     {
       "id": 22,
-      "type": "HeartMuLaAudioDecoder",
+      "type": "JKHeartMuLaAudioDecoder",
       "pos": [
         2970,
         430
@@ -88,13 +88,13 @@
       "properties": {
         "cnr_id": "ComfyUI-HeartMuLa",
         "ver": "c7a2e2c888673a944ab71443f63e63e3f45f7ff0",
-        "Node name for S&R": "HeartMuLaAudioDecoder"
+        "Node name for S&R": "JKHeartMuLaAudioDecoder"
       },
       "widgets_values": []
     },
     {
       "id": 21,
-      "type": "HeartMuLaCodecLoader",
+      "type": "JKHeartMuLaCodecLoader",
       "pos": [
         2080,
         710
@@ -119,7 +119,7 @@
       "properties": {
         "cnr_id": "ComfyUI-HeartMuLa",
         "ver": "c7a2e2c888673a944ab71443f63e63e3f45f7ff0",
-        "Node name for S&R": "HeartMuLaCodecLoader"
+        "Node name for S&R": "JKHeartMuLaCodecLoader"
       },
       "widgets_values": [
         "HeartMuLa",
@@ -153,7 +153,7 @@
     },
     {
       "id": 18,
-      "type": "HeartMuLaPostProcessor",
+      "type": "JKHeartMuLaPostProcessor",
       "pos": [
         2970,
         710
@@ -182,7 +182,7 @@
       "properties": {
         "cnr_id": "ComfyUI-HeartMuLa",
         "ver": "c7a2e2c888673a944ab71443f63e63e3f45f7ff0",
-        "Node name for S&R": "HeartMuLaPostProcessor"
+        "Node name for S&R": "JKHeartMuLaPostProcessor"
       },
       "widgets_values": [
         true,
@@ -223,7 +223,7 @@
     },
     {
       "id": 13,
-      "type": "HeartMuLaLoader",
+      "type": "JKHeartMuLaModelLoader",
       "pos": [
         2070,
         430
@@ -248,7 +248,7 @@
       "properties": {
         "cnr_id": "ComfyUI-HeartMuLa",
         "ver": "c7a2e2c888673a944ab71443f63e63e3f45f7ff0",
-        "Node name for S&R": "HeartMuLaLoader"
+        "Node name for S&R": "JKHeartMuLaModelLoader"
       },
       "widgets_values": [
         "HeartMuLa",

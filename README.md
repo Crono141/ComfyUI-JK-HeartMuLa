@@ -1,138 +1,97 @@
-# ComfyUI-HeartMuLa
+# ComfyUI-JK-HeartMuLa
 
-*Updated Feb 13, 2026: Migrated to V3 Schema & Added Happy New Year 3B Model Support*
+**HeartMuLa music generation + lyrics transcription, with MuQ-MuLan reference-audio style transfer.**
 
-A ComfyUI extension for music generation and lyrics transcription based on the [HeartMuLa model family](https://huggingface.co/HeartMuLa) and [heartlib source code](https://github.com/HeartMuLa/heartlib).
+This is a fork of [BobRandomNumber/ComfyUI-HeartMuLa](https://github.com/BobRandomNumber/ComfyUI-HeartMuLa) (Apache-2.0) that adds the ability to condition generation on the *style* of a reference track — genre, mood, instrumentation — via a MuQ-MuLan audio embedding. It bundles the full HeartMuLa toolset (loaders, generator, decoder, post-processor, transcription) so it works as a complete, standalone pack.
 
-## Features
-- **V3 Node Schema**: Fully migrated to the modern ComfyUI V3 architecture for improved stability and future-proofing.
-- **Latest Model Support**: Integrated the new **HeartMuLa-oss-3B-happy-new-year** model for state-of-the-art music generation.
-- **Modular Architecture**: Separate LLM and Codec loaders for better memory management.
-- **Inference Optimization**: Integrated `torch.compile` support for Windows, utilizing block-wise compilation to maximize speed without graph breaks. **(Needs correct triton for system)**
-- **Text-to-Music**: Generate high-fidelity audio from lyrics and style tags.
-- **Lyrics Transcription**: Automatic speech-to-text with support for long-form audio.
-- **Folder Picker UI**: Custom folder browser for easy model path selection directly in the UI.
+All node ids are uniquely prefixed (`JKHeartMuLa*` for reused nodes, `HML*` for the style-transfer additions) and grouped under the **`JK-HeartMuLa`** category, so **this pack can be installed alongside the original ComfyUI-HeartMuLa** with no conflicts.
 
-![HeartMuLaGeneration](https://github.com/BobRandomNumber/ComfyUI-HeartMuLa/blob/main/assets/HeartMuLaGeneration.png)
+## What style transfer does (and doesn't)
 
-![HeartMuLaTranscription](https://github.com/BobRandomNumber/ComfyUI-HeartMuLa/blob/main/assets/HeartMuLaTranscription.png)
+It captures **genre, mood, and instrumentation** from the reference audio. It does **not** clone voice timbre or melody — MuQ-MuLan produces a single global style embedding, not a time-aligned one.
 
 ## Installation
 
-1. Navigate to your ComfyUI `custom_nodes` folder:
+```bash
+cd ComfyUI/custom_nodes
+git clone https://github.com/Crono141/ComfyUI-JK-HeartMuLa.git
+cd ComfyUI-JK-HeartMuLa
+pip install -r requirements.txt
+```
 
-   ```bash
-   cd ComfyUI/custom_nodes
-   ```
-2. Clone this repository:
-
-   ```bash
-   git clone https://github.com/BobRandomNumber/ComfyUI-HeartMuLa.git
-   ```
-3. Install dependencies:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
+Restart ComfyUI and search the node menu under **JK-HeartMuLa**.
 
 ## Model Setup
 
-The nodes require specific model weights and configuration files. Create a base folder named `HeartMuLa` inside your ComfyUI models directory (e.g., `ComfyUI/models/HeartMuLa/`) and organize the files as follows.
+Weights are **not** auto-downloaded (to avoid duplicate/scattered models). Place them manually, exactly as for the original HeartMuLa pack. Create a base folder `ComfyUI/models/HeartMuLa/` and organize:
 
-### 1. Base Configuration Files
-Place these files directly in the root of the `HeartMuLa/` folder:
+### 1. Base configuration files (in the root of `HeartMuLa/`)
 - [gen_config.json](https://huggingface.co/HeartMuLa/HeartMuLaGen/blob/main/gen_config.json)
 - [tokenizer.json](https://huggingface.co/HeartMuLa/HeartMuLaGen/blob/main/tokenizer.json)
 
-### 2. Model Directories
-Download the repositories below as subfolders inside the `HeartMuLa/` directory.
+### 2. Model / codec directories (subfolders of `HeartMuLa/`)
+| Use | Model | Codec |
+|---|---|---|
+| ⭐ Recommended | [HeartMuLa-oss-3B-happy-new-year](https://huggingface.co/HeartMuLa/HeartMuLa-oss-3B-happy-new-year) | [HeartCodec-oss-20260123](https://huggingface.co/HeartMuLa/HeartCodec-oss-20260123) |
+| Standard | [HeartMuLa-oss-3B](https://huggingface.co/HeartMuLa/HeartMuLa-oss-3B) | [HeartCodec-oss](https://huggingface.co/HeartMuLa/HeartCodec-oss) |
+| RL-tuned | [HeartMuLa-RL-oss-3B-20260123](https://huggingface.co/HeartMuLa/HeartMuLa-RL-oss-3B-20260123) | [HeartCodec-oss-20260123](https://huggingface.co/HeartMuLa/HeartCodec-oss-20260123) |
+| Transcription | [HeartTranscriptor-oss](https://huggingface.co/HeartMuLa/HeartTranscriptor-oss) | — |
 
-#### Happy New Year Edition (3B-happy-new-year) - ⭐ RECOMMENDED
-- **Model**: [HeartMuLa-oss-3B-happy-new-year](https://huggingface.co/HeartMuLa/HeartMuLa-oss-3B-happy-new-year/tree/main)
-- **Codec**: [HeartCodec-oss-20260123](https://huggingface.co/HeartMuLa/HeartCodec-oss-20260123/tree/main)
-
-#### For Standard Generation (oss-3B)
-- **Model**: [HeartMuLa-oss-3B](https://huggingface.co/HeartMuLa/HeartMuLa-oss-3B/tree/main)
-- **Codec**: [HeartCodec-oss](https://huggingface.co/HeartMuLa/HeartCodec-oss/tree/main)
-
-#### For RL-Tuned Generation (RL-oss-3B)
-- **Model**: [HeartMuLa-RL-oss-3B-20260123](https://huggingface.co/HeartMuLa/HeartMuLa-RL-oss-3B-20260123/tree/main)
-- **Codec**: [HeartCodec-oss-20260123](https://huggingface.co/HeartMuLa/HeartCodec-oss-20260123/tree/main)
-
-#### For Transcription
-- **Model**: [HeartTranscriptor-oss](https://huggingface.co/HeartMuLa/HeartTranscriptor-oss/tree/main)
-
-### Final Directory Structure
 ```text
 ComfyUI/models/HeartMuLa/
 ├── gen_config.json
 ├── tokenizer.json
 ├── HeartMuLa-oss-3B-happy-new-year/
-├── HeartMuLa-oss-3B/
-├── HeartCodec-oss/
-├── HeartMuLa-RL-oss-3B-20260123/
 ├── HeartCodec-oss-20260123/
-└── HeartTranscriptor-oss/
+└── ...
 ```
 
-## Node Descriptions
+The MuQ-MuLan style model (`OpenMuQ/MuQ-MuLan-large`, ~2.5 GB) is the one exception — it downloads automatically from Hugging Face the first time the **HML MuQ Model Loader** node runs (it has no fixed ComfyUI models folder). Loader nodes include a 📁 folder browser for picking `base_path`.
 
-### 1. HeartMuLa Model Loader
-Loads the LLM backbone for music generation.
-- **base_path**: Folder containing the model weights. Use the integrated 📁 browser button.
-- **model_version**: Select which model version to use.
-- **torch_compile**: Enable/Disable `torch.compile` optimization.
-- **compile_backend**: Choose the compiler backend (Default: `inductor`).
-- **compile_mode**: Choose the optimization level (`default` is best for compatibility).
+## Nodes
 
-### 2. HeartMuLa Codec Loader
-Loads the audio decoder separately. Runs in standard `fp32` for maximum audio fidelity.
-- **base_path**: Folder containing the codec weights. Use the integrated 📁 browser button.
-- **codec_version**: Select which codec version to use.
+**Music generation (reused from HeartMuLa, rebranded):**
+- **HeartMuLa Loader** — loads the generator LLM. `base_path`, `model_version`, `torch_compile` + backend/mode.
+- **HeartMuLa Codec Loader** — loads the audio codec (fp32).
+- **HeartMuLa Music Generator** — the core generator. Same controls as HeartMuLa's (lyrics, tags, duration, seed, temperature, top_k, cfg_scale) **plus an optional `cmuq` input** for style transfer. Leave `cmuq` unconnected and it behaves exactly like the stock generator. Outputs tokens.
+- **HeartMuLa Audio Decoder** — tokens → 48 kHz audio.
+- **Audio Post-Processor** — normalize / stereo width / high-pass / low-pass / gain.
 
-### 3. HeartMuLa Music Generator
-The core generation node.
-- **lyrics**: The text to be sung or spoken.
-- **tags**: Style descriptions (e.g., "piano, happy, wedding, synthesizer, romantic").
-- **duration_seconds**: Desired length of the output audio.
-- **seed**: Control randomness for reproducible generations.
-- **temperature**: Higher values increase creativity/randomness, lower values make it more deterministic.
-- **top_k**: Limits sampling to the top K most likely tokens.
-- **cfg_scale**: Classifier-Free Guidance scale. Higher values follow tags more strictly (Default: 1.5).
+**Lyrics transcription (reused):**
+- **HeartMuLa Transcription Loader** / **HeartMuLa Lyrics Transcriber** — Whisper-based audio → text.
 
-### 4. HeartMuLa Audio Decoder
-Converts the generated model tokens into playable audio.
+**Style transfer (new in this fork):**
+- **HeartMuLa MuQ Model Loader** — loads `OpenMuQ/MuQ-MuLan-large` on CPU (~2.5 GB RAM, no VRAM). Singleton; loads once per session.
+- **HeartMuLa Style Embed** — **drag an audio file onto the node** (or use the upload button) for the reference → 512-D style embedding (24 kHz mono). The file uploads into ComfyUI's `input/` folder. `style_strength` (0–10) scales influence: `0` = off (identical to no reference), `1.0` = natural, higher = stronger (and eventually unstable).
 
-### 5. HeartMuLa Transcription Loader
-Loads the Whisper-based lyrics transcription model.
-- **base_path**: Folder containing the transcriptor weights. Use the integrated 📁 browser button.
+## Basic workflows
 
-### 6. HeartMuLa Lyrics Transcriber
-Converts input audio into text.
-- **max_new_tokens**: Maximum length of the generated text.
-- **num_beams**: Number of beams for beam search.
-- **condition_on_prev_tokens**: If True, uses previous segments as context.
-- **logprob_threshold**: Threshold for log probability (Default: -1.0).
-- **no_speech_threshold**: Threshold for detecting silent or non-speech segments.
-- **temperature**: Sampling temperature (0.0 enables robust multi-temperature decoding).
+Style transfer (`example_workflows/style_transfer_basic.json`):
+```
+HeartMuLa MuQ Model Loader → HeartMuLa Style Embed (drop reference audio) ─┐
+                                                                           ▼ (cmuq, optional)
+HeartMuLa Loader ──────────────────────────────► HeartMuLa Music Generator → tokens ─┐
+                                                                                      ▼
+HeartMuLa Codec Loader ───────────────────────► HeartMuLa Audio Decoder → Save Audio (→ media assets)
+```
 
-### 7. Audio Post-Processor
-A DSP utility for mastering the generated output.
-- **normalize**: Peak normalization to 0dB.
-- **stereo_width**: Adjusts stereo image width (Mid-Side processing).
-- **high_pass / low_pass**: Removes unwanted frequencies.
-- **gain_db**: Adjust output volume.
+Also included: `HeartMuLaGeneration.json` (plain generation) and `HeartMuLaTranscription.json` (lyrics transcription).
 
-## Citation
+## Credits & license
+
+This pack is Apache-2.0, as a derivative of:
+- [BobRandomNumber/ComfyUI-HeartMuLa](https://github.com/BobRandomNumber/ComfyUI-HeartMuLa) — base nodes and bundled `heartlib`. See `NOTICE` for the list of modifications.
+- [HeartMuLa/heartlib](https://github.com/HeartMuLa/heartlib) — the model library.
+- [OpenMuQ/MuQ](https://github.com/tencent-ailab/MuQ) — the MuQ-MuLan style-embedding model.
 
 ```bibtex
 @misc{yang2026heartmulafamilyopensourced,
-      title={HeartMuLa: A Family of Open Sourced Music Foundation Models}, 
-      author={Dongchao Yang and Yuxin Xie and Yuguo Yin and Zheyu Wang and Xiaoyu Yi and Gongxi Zhu and Xiaolong Weng and Zihan Xiong and Yingzhe Ma and Dading Cong and Jingliang Liu and Zihang Huang and Jinghan Ru and Rongjie Huang and Haoran Wan and Peixu Wang and Kuoxi Yu and Helin Wang and Liming Liang and Xianwei Zhuang and Yuanyuan Wang and Haohan Guo and Junjie Cao and Zeqian Ju and Songxiang Liu and Yuewen Cao and Heming Weng and Yuexian Zou},
+      title={HeartMuLa: A Family of Open Sourced Music Foundation Models},
+      author={Dongchao Yang and Yuxin Xie and Yuguo Yin and others},
       year={2026},
       eprint={2601.10547},
       archivePrefix={arXiv},
       primaryClass={cs.SD},
-      url={https://arxiv.org/abs/2601.10547}, 
+      url={https://arxiv.org/abs/2601.10547},
 }
 ```

@@ -1,0 +1,21 @@
+ComfyUI-JK-HeartMuLa
+Copyright 2026 Crono141
+
+This product is a derivative work of ComfyUI-HeartMuLa
+(https://github.com/BobRandomNumber/ComfyUI-HeartMuLa), Copyright BobRandomNumber,
+licensed under the Apache License, Version 2.0.
+
+Modifications made in this fork:
+  - Added MuQ-MuLan reference-audio style transfer:
+      * HML MuQ Model Loader (jk_nodes/muq_loader.py)
+      * HML Style Embed       (jk_nodes/style_embed.py)
+  - Replaced the original "HeartMuLa Music Generator" node with a superset
+    "Music Generator" (jk_nodes/style_generator.py) that adds an optional `cmuq`
+    style-embedding input. Behavior is identical when `cmuq` is unconnected.
+  - Rebranded all reused node ids with the `JKHeartMuLa*` prefix and the
+    `JK-HeartMuLa` category, and namespaced the folder-browser route under
+    /jkheartmula/, so this pack can be installed alongside the original.
+
+The bundled `heartlib/` library originates from HeartMuLa/heartlib
+(https://github.com/HeartMuLa/heartlib). MuQ-MuLan is from OpenMuQ
+(https://github.com/tencent-ailab/MuQ).

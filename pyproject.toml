@@ -1,16 +1,25 @@
 [project]
-name = "ComfyUI-HeartMuLa"
-description = "HeartMuLa audio generation and lyric transcription"
-version = "1.1.0"
-license = {file = "LICENSE"} 
-
-dependencies = ["torchao>=0.9.0", "torchtune>=0.4.0", "accelerate>=0.26.0", "vector-quantize-pytorch>=1.12.0"]
+name = "comfyui-jk-heartmula"
+version = "0.1.0"
+description = "HeartMuLa music generation + lyrics transcription with MuQ-MuLan reference-audio style transfer (fork of ComfyUI-HeartMuLa)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "Crono141" }]
+dependencies = [
+    "torchao>=0.9.0",
+    "torchtune>=0.4.0",
+    "accelerate>=0.26.0",
+    "vector-quantize-pytorch>=1.12.0",
+    "muq",
+    "librosa",
+]
 
 [project.urls]
-Repository = "https://github.com/BobRandomNumber/ComfyUI-HeartMuLa"
+Homepage = "https://github.com/Crono141/ComfyUI-JK-HeartMuLa"
+Repository = "https://github.com/Crono141/ComfyUI-JK-HeartMuLa"
 
 [tool.comfy]
-PublisherId = "bobrandomnumber"
-
-DisplayName = "HeartMuLa"
-
+PublisherId = "crono141"
+DisplayName = "JK HeartMuLa (Style Transfer)"
+Icon = ""

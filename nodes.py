@@ -35,9 +35,9 @@ class HeartMuLaLoader(io.ComfyNode):
     @classmethod
     def define_schema(cls) -> io.Schema:
         return io.Schema(
-            node_id="HeartMuLaLoader",
+            node_id="JKHeartMuLaModelLoader",
             display_name="HeartMuLa Loader",
-            category="HeartMuLa",
+            category="JK-HeartMuLa",
             inputs=[
                 io.String.Input("base_path", default="HeartMuLa", multiline=False),
                 io.Combo.Input("model_version", options=[
@@ -80,9 +80,9 @@ class HeartMuLaCodecLoader(io.ComfyNode):
     @classmethod
     def define_schema(cls) -> io.Schema:
         return io.Schema(
-            node_id="HeartMuLaCodecLoader",
+            node_id="JKHeartMuLaCodecLoader",
             display_name="HeartMuLa Codec Loader",
-            category="HeartMuLa",
+            category="JK-HeartMuLa",
             inputs=[
                 io.String.Input("base_path", default="HeartMuLa", multiline=False),
                 io.Combo.Input("codec_version", options=[
@@ -109,88 +109,17 @@ class HeartMuLaCodecLoader(io.ComfyNode):
         except Exception as e:
             raise RuntimeError(f"Failed to load HeartCodec: {e}")
 
-class HeartMuLaMusicGenerator(io.ComfyNode):
-    @classmethod
-    def define_schema(cls) -> io.Schema:
-        return io.Schema(
-            node_id="HeartMuLaMusicGenerator",
-            display_name="HeartMuLa Music Generator",
-            category="HeartMuLa",
-            inputs=[
-                HEARTMULA_MODEL.Input("model"),
-                io.String.Input("lyrics", multiline=True, default=""),
-                io.String.Input("tags", multiline=True, default=""),
-                io.Float.Input("duration_seconds", default=30.0, min=1.0, max=300.0),
-                io.Int.Input("seed", default=0, min=0, max=0xffffffffffffffff),
-                io.Float.Input("temperature", default=1.0, min=0.1, max=2.0),
-                io.Int.Input("top_k", default=50, min=1, max=1000),
-                io.Float.Input("cfg_scale", default=1.5, min=0.1, max=5.0),
-            ],
-            outputs=[HEARTMULA_TOKENS.Output(display_name="tokens")]
-        )
-
-    @classmethod
-    def execute(cls, model, lyrics, tags, duration_seconds, seed, temperature, top_k, cfg_scale) -> io.NodeOutput:
-        torch.manual_seed(seed)
-        try:
-            torch.set_float32_matmul_precision('high')
-            torch._dynamo.reset()
-        except: pass
-            
-        comfy.model_management.unload_all_models()
-        comfy.model_management.soft_empty_cache()
-        device = comfy.model_management.get_torch_device()
-        
-        cleaned_tags = ",".join([t.strip() for t in tags.split(",") if t.strip()])
-        
-        try:
-            inputs = {"lyrics": lyrics, "tags": cleaned_tags}
-            processed_inputs = model.preprocess(inputs, cfg_scale)
-            max_audio_length_ms = int(duration_seconds * 1000)
-
-            print(f"Moving HeartMuLa Generator to {device}...")
-            model.model.to(device)
-            torch.cuda.synchronize()
-            
-            model.setup_caches(max_batch_size=processed_inputs["tokens"].shape[0])
-            model.ensure_compiled()
-
-            for k, v in processed_inputs.items():
-                if isinstance(v, torch.Tensor):
-                    processed_inputs[k] = v.to(device)
-                    if v.is_floating_point():
-                         processed_inputs[k] = processed_inputs[k].to(dtype=model.dtype)
-
-            gen_steps = int(duration_seconds * 1000 // 80)
-            pbar = comfy.utils.ProgressBar(gen_steps)
-            
-            def gen_callback(step):
-                pbar.update(1)
-
-            with torch.no_grad():
-                tokens = model.generate_tokens(
-                    processed_inputs,
-                    max_audio_length_ms=max_audio_length_ms,
-                    temperature=temperature,
-                    topk=top_k,
-                    cfg_scale=cfg_scale,
-                    callback=gen_callback
-                )
-            
-            torch.cuda.synchronize()
-            return io.NodeOutput(tokens)
-        finally:
-            model.model.to("cpu")
-            torch.cuda.synchronize()
-            comfy.model_management.soft_empty_cache()
+# NOTE: HeartMuLa's original "HeartMuLaMusicGenerator" node is intentionally
+# omitted here. It is replaced by jk_nodes/style_generator.py, which is a strict
+# superset (identical behavior when its optional `cmuq` input is unconnected).
 
 class HeartMuLaAudioDecoder(io.ComfyNode):
     @classmethod
     def define_schema(cls) -> io.Schema:
         return io.Schema(
-            node_id="HeartMuLaAudioDecoder",
+            node_id="JKHeartMuLaAudioDecoder",
             display_name="HeartMuLa Audio Decoder",
-            category="HeartMuLa",
+            category="JK-HeartMuLa",
             inputs=[
                 HEARTMULA_TOKENS.Input("tokens"),
                 HEARTMULA_CODEC.Input("codec"),
@@ -239,9 +168,9 @@ class HeartMuLaTranscriptionLoader(io.ComfyNode):
     @classmethod
     def define_schema(cls) -> io.Schema:
         return io.Schema(
-            node_id="HeartMuLaTranscriptionLoader",
+            node_id="JKHeartMuLaTranscriptionLoader",
             display_name="HeartMuLa Transcription Loader",
-            category="HeartMuLa",
+            category="JK-HeartMuLa",
             inputs=[
                 io.String.Input("base_path", default="HeartMuLa", multiline=False),
             ],
@@ -267,9 +196,9 @@ class HeartMuLaLyricsTranscriber(io.ComfyNode):
     @classmethod
     def define_schema(cls) -> io.Schema:
         return io.Schema(
-            node_id="HeartMuLaLyricsTranscriber",
+            node_id="JKHeartMuLaLyricsTranscriber",
             display_name="HeartMuLa Lyrics Transcriber",
-            category="HeartMuLa",
+            category="JK-HeartMuLa",
             inputs=[
                 HEARTMULA_TRANSCRIPTOR.Input("transcriptor"),
                 AUDIO.Input("audio"),
@@ -323,9 +252,9 @@ class HeartMuLaPostProcessor(io.ComfyNode):
     @classmethod
     def define_schema(cls) -> io.Schema:
         return io.Schema(
-            node_id="HeartMuLaPostProcessor",
+            node_id="JKHeartMuLaPostProcessor",
             display_name="Audio Post-Processor",
-            category="HeartMuLa",
+            category="JK-HeartMuLa",
             inputs=[
                 AUDIO.Input("audio"),
                 io.Boolean.Input("normalize", default=True),

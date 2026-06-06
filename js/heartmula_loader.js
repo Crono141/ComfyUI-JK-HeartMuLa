@@ -2,9 +2,9 @@ import { app } from "../../scripts/app.js";
 import { $el } from "../../scripts/ui.js";
 
 app.registerExtension({
-    name: "HeartMuLa.FolderPicker",
+    name: "JKHeartMuLa.FolderPicker",
     async beforeRegisterNodeDef(nodeType, nodeData, app) {
-        if (nodeData.name === "HeartMuLaLoader" || nodeData.name === "HeartMuLaCodecLoader" || nodeData.name === "HeartMuLaTranscriptionLoader") {
+        if (nodeData.name === "JKHeartMuLaModelLoader" || nodeData.name === "JKHeartMuLaCodecLoader" || nodeData.name === "JKHeartMuLaTranscriptionLoader") {
             const onNodeCreated = nodeType.prototype.onNodeCreated;
             nodeType.prototype.onNodeCreated = function () {
                 const r = onNodeCreated ? onNodeCreated.apply(this, arguments) : undefined;
@@ -98,7 +98,7 @@ async function showFolderPicker(onSelect) {
 
     const updateList = async (path) => {
         listContainer.innerHTML = "<div style='padding:20px; color:#888'>Loading...</div>";
-        const response = await fetch(`/heartmula/browse?path=${encodeURIComponent(path)}`);
+        const response = await fetch(`/jkheartmula/browse?path=${encodeURIComponent(path)}`);
         const data = await response.json();
         
         if (data.error) {
