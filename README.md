@@ -51,6 +51,7 @@ The MuQ-MuLan style model (`OpenMuQ/MuQ-MuLan-large`, ~2.5 GB) is the one except
 ## Nodes
 
 **Music generation (reused from HeartMuLa, rebranded):**
+- **HeartMuLa Tag Builder** — per-category fields (genre / mood / instrument / vocal / production free-text with tag-suggestion tooltips, tempo / era dropdowns) plus a **multiline** `additional_tags` box. Lowercases, de-dupes, and comma-joins into a single `tags` string for the Music Generator. (Ported from RT-HeartMuLa's tag builder.)
 - **HeartMuLa Loader** — loads the generator LLM. `base_path`, `model_version`, `torch_compile` + backend/mode.
 - **HeartMuLa Codec Loader** — loads the audio codec (fp32).
 - **HeartMuLa Music Generator** — the core generator. Same controls as HeartMuLa's (lyrics, tags, duration, seed, temperature, top_k, cfg_scale) **plus an optional `cmuq` input** for style transfer. Leave `cmuq` unconnected and it behaves exactly like the stock generator. Outputs tokens.
@@ -62,7 +63,7 @@ The MuQ-MuLan style model (`OpenMuQ/MuQ-MuLan-large`, ~2.5 GB) is the one except
 
 **Style transfer (new in this fork):**
 - **HeartMuLa MuQ Model Loader** — loads `OpenMuQ/MuQ-MuLan-large` on CPU (~2.5 GB RAM, no VRAM). Singleton; loads once per session.
-- **HeartMuLa Style Embed** — **drag an audio file onto the node** (or use the upload button) for the reference → 512-D style embedding (24 kHz mono). The file uploads into ComfyUI's `input/` folder. `style_strength` (0–10) scales influence: `0` = off (identical to no reference), `1.0` = natural, higher = stronger (and eventually unstable).
+- **HeartMuLa Style Embed** — produces the 512-D style embedding (24 kHz mono) from a reference clip, with a per-clip progress bar. Provide the reference either by **dragging an audio file onto the node** (or the upload button — the file lands in ComfyUI's `input/` folder) or by wiring the optional **`audio_input` socket** from any AUDIO source (Load Audio, Record Audio, a trimmed clip, generated audio…). The socket takes priority when connected. `style_strength` (0–10) scales influence: `0` = off (identical to no reference), `1.0` = natural, higher = stronger (and eventually unstable).
 
 ## Basic workflows
 

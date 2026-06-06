@@ -33,6 +33,7 @@ from .nodes import (
 from .jk_nodes.muq_loader import JKHeartMuLaMuQModelLoader
 from .jk_nodes.style_embed import JKHeartMuLaStyleEmbed
 from .jk_nodes.style_generator import JKHeartMuLaMusicGenerator
+from .jk_nodes.tags_builder import JKHeartMuLaTagsBuilder
 
 
 class JKHeartMuLaExtension(ComfyExtension):
@@ -96,6 +97,7 @@ class JKHeartMuLaExtension(ComfyExtension):
         return [
             HeartMuLaLoader,
             HeartMuLaCodecLoader,
+            JKHeartMuLaTagsBuilder,
             JKHeartMuLaMusicGenerator,   # replaces HeartMuLa's Music Generator
             HeartMuLaAudioDecoder,
             HeartMuLaTranscriptionLoader,

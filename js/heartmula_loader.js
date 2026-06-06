@@ -23,6 +23,32 @@ app.registerExtension({
     },
 });
 
+// HeartMuLa Style Embed uses ComfyUI's audio upload widget (audio_upload). Core's
+// Comfy.UploadAudio handler requires an "audioUI" preview widget to exist, but
+// core's Comfy.AudioWidget only injects that widget for a hardcoded list of node
+// types (LoadAudio/SaveAudio/PreviewAudio/...). Without it, our node throws during
+// creation and silently fails to add. Inject the same AUDIO_UI widget for our node.
+//
+// Widgets are created in input-key order, and the upload widget's handler looks up
+// "audioUI" at creation time -- so audioUI MUST come before the "upload" key.
+// Insert it immediately after "audio" (and before the upload widget, wherever it
+// lands) by rebuilding the required-inputs object.
+app.registerExtension({
+    name: "JKHeartMuLa.StyleEmbedAudioUI",
+    async beforeRegisterNodeDef(nodeType, nodeData, app) {
+        if (nodeData?.name !== "JKHeartMuLaStyleEmbed") return;
+        const req = nodeData?.input?.required;
+        if (!req || req.audioUI) return;
+        const rebuilt = {};
+        for (const k of Object.keys(req)) {
+            rebuilt[k] = req[k];
+            if (k === "audio") rebuilt.audioUI = ["AUDIO_UI", {}];
+        }
+        if (!rebuilt.audioUI) rebuilt.audioUI = ["AUDIO_UI", {}];
+        nodeData.input.required = rebuilt;
+    },
+});
+
 async function showFolderPicker(onSelect) {
     let currentPath = "";
     
