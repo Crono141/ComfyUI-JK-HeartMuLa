@@ -36,6 +36,10 @@ from .muq_loader import MUQ_TYPE
 # HeartMuLa Music Generator.
 CMUQ_TYPE = io.Custom("JKHEARTMULA_CMUQ")
 
+# MuQ-MuLan-large embedding dimension (== HeartMuLa's muq_dim). A zero vector of
+# this size means "no style", identical to heartlib's default muq_embed.
+MUQ_EMBED_DIM = 512
+
 
 class JKHeartMuLaStyleEmbed(io.ComfyNode):
     @classmethod
@@ -49,6 +53,13 @@ class JKHeartMuLaStyleEmbed(io.ComfyNode):
             category="JK-HeartMuLa",
             inputs=[
                 MUQ_TYPE.Input("muq_model"),
+                io.Boolean.Input(
+                    "enable",
+                    default=True,
+                    tooltip="When off, output a zero embedding (no style transfer) -- "
+                            "identical to style_strength = 0. Lets a single switch toggle "
+                            "style transfer on/off in a shared workflow without rewiring.",
+                ),
                 io.Combo.Input(
                     "audio",
                     upload=io.UploadType.audio,
@@ -73,21 +84,29 @@ class JKHeartMuLaStyleEmbed(io.ComfyNode):
         )
 
     @classmethod
-    def fingerprint_inputs(cls, audio=None, style_strength=1.0, **kwargs) -> str:
-        # Re-run when the uploaded file content or the strength changes. (Changes
-        # to a connected `audio_input` socket are detected via the normal input
-        # graph.)
+    def fingerprint_inputs(cls, audio=None, style_strength=1.0, enable=True, **kwargs) -> str:
+        # Re-run when the toggle, strength, or uploaded file content changes.
+        # (Changes to a connected `audio_input` socket are detected via the normal
+        # input graph.)
+        base = f"{style_strength}:{enable}"
         try:
             path = folder_paths.get_annotated_filepath(audio)
             m = hashlib.sha256()
             with open(path, "rb") as f:
                 m.update(f.read())
-            return f"{m.hexdigest()}:{style_strength}"
+            return f"{m.hexdigest()}:{base}"
         except Exception:
-            return f"{audio}:{style_strength}"
+            return f"{audio}:{base}"
 
     @classmethod
-    def execute(cls, muq_model, audio, style_strength, audio_input=None) -> io.NodeOutput:
+    def execute(cls, muq_model, enable, audio, style_strength, audio_input=None) -> io.NodeOutput:
+        # When disabled, emit a zero embedding (no style transfer) and skip all
+        # audio loading / MuQ work -- a single switch to toggle style in a shared
+        # workflow. Equivalent to style_strength = 0.
+        if not enable:
+            print("[JK-HeartMuLa] Style Embed disabled -> zero embedding (no style transfer)")
+            return io.NodeOutput(torch.zeros(MUQ_EMBED_DIM, dtype=torch.bfloat16))
+
         # Resolve the reference waveform to a 24 kHz mono 1-D tensor. A connected
         # audio_input socket takes priority over the uploaded file.
         if audio_input is not None:

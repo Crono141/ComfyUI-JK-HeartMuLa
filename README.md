@@ -63,7 +63,7 @@ The MuQ-MuLan style model (`OpenMuQ/MuQ-MuLan-large`, ~2.5 GB) is the one except
 
 **Style transfer (new in this fork):**
 - **HeartMuLa MuQ Model Loader** — loads `OpenMuQ/MuQ-MuLan-large` on CPU (~2.5 GB RAM, no VRAM). Singleton; loads once per session.
-- **HeartMuLa Style Embed** — produces the 512-D style embedding (24 kHz mono) from a reference clip, with a per-clip progress bar. Provide the reference either by **dragging an audio file onto the node** (or the upload button — the file lands in ComfyUI's `input/` folder) or by wiring the optional **`audio_input` socket** from any AUDIO source (Load Audio, Record Audio, a trimmed clip, generated audio…). The socket takes priority when connected. `style_strength` (0–10) scales influence: `0` = off (identical to no reference), `1.0` = natural, higher = stronger (and eventually unstable).
+- **HeartMuLa Style Embed** — produces the 512-D style embedding (24 kHz mono) from a reference clip, with a per-clip progress bar. An **`enable`** toggle turns style transfer off with a single switch (outputs a zero embedding — identical to `style_strength = 0` / no reference — and skips all audio + MuQ work), so one switch can flip a shared workflow between styled and tag-only. Provide the reference either by **dragging an audio file onto the node** (or the upload button — the file lands in ComfyUI's `input/` folder) or by wiring the optional **`audio_input` socket** from any AUDIO source (Load Audio, Record Audio, a trimmed clip, generated audio…). The socket takes priority when connected. `style_strength` (0–10) scales influence: `0` = off (identical to no reference), `1.0` = natural, higher = stronger (and eventually unstable).
 
 ## Basic workflows
 
