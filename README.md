@@ -51,7 +51,7 @@ The MuQ-MuLan style model (`OpenMuQ/MuQ-MuLan-large`, ~2.5 GB) is the one except
 ## Nodes
 
 **Music generation (reused from HeartMuLa, rebranded):**
-- **HeartMuLa Tag Builder** — per-category fields (genre / mood / instrument / vocal / production free-text with tag-suggestion tooltips, tempo / era dropdowns) plus a **multiline** `additional_tags` box. Lowercases, de-dupes, and comma-joins into a single `tags` string for the Music Generator. (Ported from RT-HeartMuLa's tag builder.)
+- **HeartMuLa Tag Builder** — per-category fields (genre / mood / instrument / vocal / production free-text with tag-suggestion tooltips, tempo / era dropdowns) plus a **multiline** `additional_tags` box. Lowercases, de-dupes, and comma-joins into a single `tags` string for the Music Generator. (Original implementation; concept inspired by RT-HeartMuLa.)
 - **HeartMuLa Loader** — loads the generator LLM. `base_path`, `model_version`, `torch_compile` + backend/mode.
 - **HeartMuLa Codec Loader** — loads the audio codec (fp32).
 - **HeartMuLa Music Generator** — the core generator. Same controls as HeartMuLa's (lyrics, tags, duration, seed, temperature, top_k, cfg_scale) **plus an optional `cmuq` input** for style transfer. Leave `cmuq` unconnected and it behaves exactly like the stock generator. Outputs tokens.

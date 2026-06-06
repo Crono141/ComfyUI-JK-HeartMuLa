@@ -1,57 +1,59 @@
 """HeartMuLa Tag Builder.
 
-A V3 port of the RT-HeartMuLa "HeartMuLa Tags Builder": per-category free-text /
-dropdown inputs that are lowercased, de-duplicated (first occurrence wins), and
-comma-joined into a single tag string for the Music Generator's `tags` input.
+Builds a single, generator-ready tag string from a set of music-description
+fields. Values are split on commas, lowercased, trimmed, de-duplicated (first
+occurrence wins), with blanks and "none" dropped, then comma-joined -- the form
+HeartMuLa's tag conditioning expects.
 
-The only deliberate change from the RT version is that `additional_tags` is a
-multiline text box (instead of a single line that overflows).
+Original implementation. The general idea of a category-based music tag builder
+was inspired by RT-HeartMuLa, but none of its code or tag data is used here.
 """
-
-from datetime import datetime
 
 from comfy_api.latest import io
 
-ORANGE = "\033[38;5;208m"
-RESET = "\033[0m"
-
-GENRE_TAGS = [
-    "pop", "rock", "jazz", "electronic", "classical", "hip-hop", "r&b",
-    "country", "reggae", "blues", "folk", "metal", "punk", "disco", "funk",
-    "soul", "indie", "edm", "house", "techno", "ambient", "lo-fi", "k-pop",
-    "j-pop", "c-pop", "latin", "reggaeton", "bossa nova",
+# Suggestion lists surfaced in tooltips. The free-text fields accept any
+# comma-separated values; these are only hints, not a fixed vocabulary.
+GENRE_SUGGESTIONS = [
+    "pop", "rock", "hip hop", "electronic", "jazz", "classical", "r&b", "soul",
+    "funk", "disco", "house", "techno", "trance", "drum and bass", "ambient",
+    "lo-fi", "synthwave", "metal", "punk", "indie", "folk", "country", "blues",
+    "gospel", "reggae", "latin", "afrobeat", "k-pop", "orchestral", "cinematic",
 ]
-MOOD_TAGS = [
-    "happy", "sad", "energetic", "calm", "romantic", "melancholic",
-    "uplifting", "dark", "dreamy", "aggressive", "peaceful", "nostalgic",
-    "hopeful", "mysterious", "playful", "epic", "chill", "intense",
+MOOD_SUGGESTIONS = [
+    "uplifting", "melancholic", "energetic", "mellow", "dreamy", "dark",
+    "euphoric", "nostalgic", "tense", "triumphant", "romantic", "somber",
+    "playful", "hypnotic", "anthemic", "serene", "gritty", "bittersweet",
 ]
-INSTRUMENT_TAGS = [
-    "piano", "guitar", "acoustic guitar", "electric guitar", "bass", "drums",
-    "violin", "cello", "saxophone", "trumpet", "flute", "synth", "strings",
-    "orchestra", "choir", "808", "harp", "organ", "ukulele", "harmonica",
+INSTRUMENT_SUGGESTIONS = [
+    "acoustic guitar", "electric guitar", "piano", "synthesizer", "bass guitar",
+    "drum kit", "808 bass", "strings", "brass", "saxophone", "violin", "cello",
+    "flute", "organ", "electric piano", "pads", "arpeggiated synth",
+    "hand percussion", "choir", "harp",
 ]
-TEMPO_TAGS = [
-    "none", "slow", "moderate", "fast", "very fast", "ballad", "uptempo",
-    "mid-tempo", "groovy",
+VOCAL_SUGGESTIONS = [
+    "male vocals", "female vocals", "duet", "group vocals", "choir", "rap",
+    "spoken word", "falsetto", "belting", "breathy", "layered harmonies",
+    "vocoder", "instrumental",
 ]
-VOCAL_TAGS = [
-    "male vocal", "female vocal", "duet", "choir", "rap", "whisper",
-    "powerful vocals", "falsetto", "soprano", "baritone", "tenor", "alto",
-    "harmonies", "a cappella",
-]
-ERA_TAGS = [
-    "none", "80s", "90s", "2000s", "modern", "retro", "vintage", "70s", "60s",
-    "futuristic",
-]
-PRODUCTION_TAGS = [
-    "cinematic", "lo-fi", "hi-fi", "acoustic", "electronic", "live", "studio",
-    "raw", "polished", "minimalist", "layered", "atmospheric",
+PRODUCTION_SUGGESTIONS = [
+    "polished", "raw", "lo-fi", "hi-fi", "warm", "punchy", "spacious",
+    "compressed", "vintage tape", "reverb-heavy", "dry", "wide stereo",
+    "minimal", "dense",
 ]
 
+# Single-pick dropdowns. "none" is treated as "leave unset".
+TEMPO_OPTIONS = [
+    "none", "very slow", "slow", "mid-tempo", "upbeat", "fast", "very fast",
+    "half-time", "double-time", "driving",
+]
+ERA_OPTIONS = [
+    "none", "1960s", "1970s", "1980s", "1990s", "2000s", "2010s",
+    "contemporary", "retro", "futuristic",
+]
 
-def _tooltip(name, tags):
-    return f"{name} tags (comma-separated). Available: {', '.join(tags)}"
+
+def _hint(label, words):
+    return f"{label} — type any comma-separated tags. Suggestions: {', '.join(words)}"
 
 
 class JKHeartMuLaTagsBuilder(io.ComfyNode):
@@ -62,55 +64,43 @@ class JKHeartMuLaTagsBuilder(io.ComfyNode):
             display_name="HeartMuLa Tag Builder",
             category="JK-HeartMuLa",
             inputs=[
-                io.String.Input("genre", default="", placeholder="pop, rock, ...",
-                                tooltip=_tooltip("Genre", GENRE_TAGS)),
-                io.String.Input("mood", default="", placeholder="happy, dreamy, ...",
-                                tooltip=_tooltip("Mood", MOOD_TAGS)),
-                io.String.Input("instrument", default="", placeholder="piano, guitar, ...",
-                                tooltip=_tooltip("Instrument", INSTRUMENT_TAGS)),
-                io.Combo.Input("tempo", options=TEMPO_TAGS, default="none"),
-                io.String.Input("vocal", default="", placeholder="female vocal, harmonies, ...",
-                                tooltip=_tooltip("Vocal", VOCAL_TAGS)),
-                io.Combo.Input("era", options=ERA_TAGS, default="none"),
-                io.String.Input("production", default="", placeholder="cinematic, lo-fi, ...",
-                                tooltip=_tooltip("Production", PRODUCTION_TAGS)),
-                # Multiline (the one change from the RT builder).
+                io.String.Input("genre", default="", placeholder="e.g. synthwave, pop",
+                                tooltip=_hint("Genre", GENRE_SUGGESTIONS)),
+                io.String.Input("mood", default="", placeholder="e.g. dreamy, euphoric",
+                                tooltip=_hint("Mood", MOOD_SUGGESTIONS)),
+                io.String.Input("instrument", default="", placeholder="e.g. piano, 808 bass",
+                                tooltip=_hint("Instruments", INSTRUMENT_SUGGESTIONS)),
+                io.Combo.Input("tempo", options=TEMPO_OPTIONS, default="none",
+                               tooltip="Overall tempo feel (single pick)."),
+                io.String.Input("vocal", default="", placeholder="e.g. female vocals, layered harmonies",
+                                tooltip=_hint("Vocals", VOCAL_SUGGESTIONS)),
+                io.Combo.Input("era", options=ERA_OPTIONS, default="none",
+                               tooltip="Production era (single pick)."),
+                io.String.Input("production", default="", placeholder="e.g. warm, wide stereo",
+                                tooltip=_hint("Production", PRODUCTION_SUGGESTIONS)),
                 io.String.Input("additional_tags", default="", multiline=True, optional=True,
-                                placeholder="anything not covered above",
-                                tooltip="Free-text comma-separated tags. Use for anything not "
-                                        "in the dropdowns or per-category lists."),
+                                placeholder="anything not covered above, comma-separated",
+                                tooltip="Free-form comma-separated tags for anything the fields "
+                                        "above don't cover."),
             ],
             outputs=[io.String.Output(display_name="tags")],
         )
 
     @classmethod
-    def fingerprint_inputs(cls, **kwargs):
-        # Force a re-run on every Queue Prompt so the "process started" banner
-        # always appears (matches the RT builder's IS_CHANGED behavior).
-        return float("NaN")
-
-    @classmethod
     def execute(cls, genre, mood, instrument, tempo, vocal, era, production,
                 additional_tags="") -> io.NodeOutput:
-        start_clock = datetime.now().strftime("%I:%M:%S %p")
-        print(f"\n{ORANGE}--------------------process started "
-              f"[@ {start_clock}]--------------------{RESET}")
+        fields = [genre, mood, instrument, tempo, vocal, era, production, additional_tags]
 
-        # Per-category inputs in spec order. Each item is either a raw user STRING
-        # (comma-separated, possibly multi-tag) or a single dropdown pick.
-        sources = [genre, mood, instrument, tempo, vocal, era, production, additional_tags]
-
-        # Paper compliance: tags lowercase, comma-joined, no "none", deduped
-        # (first occurrence wins).
         seen = set()
-        clean_tags = []
-        for src in sources:
-            for raw in str(src).split(","):
-                t = raw.lower().strip()
-                if not t or t == "none" or t in seen:
+        tags = []
+        for field in fields:
+            for token in str(field).split(","):
+                tag = token.strip().lower()
+                if not tag or tag == "none" or tag in seen:
                     continue
-                seen.add(t)
-                clean_tags.append(t)
+                seen.add(tag)
+                tags.append(tag)
 
-        formatted_tags = ", ".join(clean_tags)
-        return io.NodeOutput(formatted_tags)
+        result = ", ".join(tags)
+        print(f"[JK-HeartMuLa] Tag Builder -> {result!r}")
+        return io.NodeOutput(result)
