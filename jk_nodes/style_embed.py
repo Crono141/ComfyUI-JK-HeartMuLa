@@ -53,13 +53,6 @@ class JKHeartMuLaStyleEmbed(io.ComfyNode):
             category="JK-HeartMuLa",
             inputs=[
                 MUQ_TYPE.Input("muq_model"),
-                io.Boolean.Input(
-                    "enable",
-                    default=True,
-                    tooltip="When off, output a zero embedding (no style transfer) -- "
-                            "identical to style_strength = 0. Lets a single switch toggle "
-                            "style transfer on/off in a shared workflow without rewiring.",
-                ),
                 io.Combo.Input(
                     "audio",
                     upload=io.UploadType.audio,
@@ -74,6 +67,15 @@ class JKHeartMuLaStyleEmbed(io.ComfyNode):
                     max=10.0,
                     step=0.05,
                     display_mode=io.NumberDisplay.slider,
+                ),
+                # Appended after the original widgets (not inserted) so existing
+                # saved workflows keep their widget positions and still load.
+                io.Boolean.Input(
+                    "enable",
+                    default=True,
+                    tooltip="When off, output a zero embedding (no style transfer) -- "
+                            "identical to style_strength = 0. Lets a single switch toggle "
+                            "style transfer on/off in a shared workflow without rewiring.",
                 ),
                 # Optional: feed reference audio from another node (Load Audio,
                 # Record Audio, a trimmed clip, generated audio...). Overrides the
@@ -99,7 +101,7 @@ class JKHeartMuLaStyleEmbed(io.ComfyNode):
             return f"{audio}:{base}"
 
     @classmethod
-    def execute(cls, muq_model, enable, audio, style_strength, audio_input=None) -> io.NodeOutput:
+    def execute(cls, muq_model, audio, style_strength, enable=True, audio_input=None) -> io.NodeOutput:
         # When disabled, emit a zero embedding (no style transfer) and skip all
         # audio loading / MuQ work -- a single switch to toggle style in a shared
         # workflow. Equivalent to style_strength = 0.
