@@ -106,7 +106,9 @@ Also included: `style_transfer_basic.json` (minimal style-transfer graph), `Hear
 - **compile_backend** — `inductor` (default; generates fused Triton/C++ kernels; most reliable), `cudagraphs` (CUDA-graph capture; can log a harmless `unexpected keyword argument 'mode'` warning on some torch builds), or `eager` (no compilation, the baseline).
 - **compile_mode** — `default` (compile + fuse, quick to build), `reduce-overhead` (adds CUDA graphs to cut per-step launch overhead; uses more memory), `max-autotune` (benchmarks kernel variants for top speed; **much** longer first compile).
 
-Reliable combo: `inductor` + `default`. For heavy/repeated use where a long first compile is acceptable: `inductor` + `max-autotune`.
+> ⚠️ **CUDA-graph modes vs ComfyUI's allocator:** `reduce-overhead` and `max-autotune` enable **CUDA graphs**, whose memory-pool check isn't supported by the `cudaMallocAsync` allocator ComfyUI uses by default — you'll hit `RuntimeError: cudaMallocAsync does not yet support checkPoolLiveAllocations`. To use those modes, launch ComfyUI with **`--disable-cuda-malloc`**. Otherwise keep `compile_mode = default` (no CUDA graphs).
+
+Reliable combo: `inductor` + `default`. Use `max-autotune` only together with `--disable-cuda-malloc`.
 
 ## Credits & license
 
