@@ -5,124 +5,314 @@
     {
       "id": 1,
       "type": "JKHeartMuLaMuQModelLoader",
-      "pos": [100, 100],
-      "size": [260, 26],
+      "pos": [
+        100,
+        100
+      ],
+      "size": [
+        260,
+        26
+      ],
       "flags": {},
       "order": 0,
       "mode": 0,
       "inputs": [],
       "outputs": [
-        {"name": "muq_model", "type": "JKHEARTMULA_MUQ", "links": [1], "slot_index": 0}
+        {
+          "name": "muq_model",
+          "type": "JKHEARTMULA_MUQ",
+          "links": [
+            1
+          ],
+          "slot_index": 0
+        }
       ],
-      "properties": {"Node name for S&R": "JKHeartMuLaMuQModelLoader"},
+      "properties": {
+        "Node name for S&R": "JKHeartMuLaMuQModelLoader"
+      },
       "widgets_values": []
     },
     {
       "id": 4,
       "type": "JKHeartMuLaStyleEmbed",
-      "pos": [100, 200],
-      "size": [320, 120],
+      "pos": [
+        100,
+        200
+      ],
+      "size": [
+        320,
+        120
+      ],
       "flags": {},
       "order": 3,
       "mode": 0,
       "inputs": [
-        {"name": "muq_model", "type": "JKHEARTMULA_MUQ", "link": 1}
+        {
+          "name": "muq_model",
+          "type": "JKHEARTMULA_MUQ",
+          "link": 1
+        }
       ],
       "outputs": [
-        {"name": "cmuq", "type": "JKHEARTMULA_CMUQ", "links": [2], "slot_index": 0}
+        {
+          "name": "cmuq",
+          "type": "JKHEARTMULA_CMUQ",
+          "links": [
+            2
+          ],
+          "slot_index": 0
+        }
       ],
-      "properties": {"Node name for S&R": "JKHeartMuLaStyleEmbed"},
-      "widgets_values": ["", 1.0]
+      "properties": {
+        "Node name for S&R": "JKHeartMuLaStyleEmbed"
+      },
+      "widgets_values": [
+        true,
+        true,
+        "",
+        1.0
+      ]
     },
     {
       "id": 2,
       "type": "JKHeartMuLaModelLoader",
-      "pos": [100, 380],
-      "size": [320, 160],
+      "pos": [
+        100,
+        380
+      ],
+      "size": [
+        320,
+        160
+      ],
       "flags": {},
       "order": 1,
       "mode": 0,
       "inputs": [],
       "outputs": [
-        {"name": "model", "type": "HEARTMULA_MODEL", "links": [3], "slot_index": 0}
+        {
+          "name": "model",
+          "type": "HEARTMULA_MODEL",
+          "links": [
+            3
+          ],
+          "slot_index": 0
+        }
       ],
-      "properties": {"Node name for S&R": "JKHeartMuLaModelLoader"},
-      "widgets_values": ["HeartMuLa", "HeartMuLa-oss-3B-happy-new-year", false, "inductor", "default"]
+      "properties": {
+        "Node name for S&R": "JKHeartMuLaModelLoader"
+      },
+      "widgets_values": [
+        "HeartMuLa",
+        "HeartMuLa-oss-3B-happy-new-year",
+        false,
+        "inductor",
+        "default"
+      ]
     },
     {
       "id": 3,
       "type": "JKHeartMuLaCodecLoader",
-      "pos": [100, 580],
-      "size": [320, 90],
+      "pos": [
+        100,
+        580
+      ],
+      "size": [
+        320,
+        90
+      ],
       "flags": {},
       "order": 2,
       "mode": 0,
       "inputs": [],
       "outputs": [
-        {"name": "codec", "type": "HEARTMULA_CODEC", "links": [5], "slot_index": 0}
+        {
+          "name": "codec",
+          "type": "HEARTMULA_CODEC",
+          "links": [
+            5
+          ],
+          "slot_index": 0
+        }
       ],
-      "properties": {"Node name for S&R": "JKHeartMuLaCodecLoader"},
-      "widgets_values": ["HeartMuLa", "HeartCodec-oss-20260123"]
+      "properties": {
+        "Node name for S&R": "JKHeartMuLaCodecLoader"
+      },
+      "widgets_values": [
+        "HeartMuLa",
+        "HeartCodec-oss-20260123"
+      ]
     },
     {
       "id": 5,
       "type": "JKHeartMuLaMusicGenerator",
-      "pos": [480, 200],
-      "size": [360, 320],
+      "pos": [
+        480,
+        200
+      ],
+      "size": [
+        360,
+        320
+      ],
       "flags": {},
       "order": 4,
       "mode": 0,
       "inputs": [
-        {"name": "model", "type": "HEARTMULA_MODEL", "link": 3},
-        {"name": "cmuq", "type": "JKHEARTMULA_CMUQ", "link": 2, "shape": 7}
+        {
+          "name": "model",
+          "type": "HEARTMULA_MODEL",
+          "link": 3
+        },
+        {
+          "name": "cmuq",
+          "type": "JKHEARTMULA_CMUQ",
+          "link": 2,
+          "shape": 7
+        }
       ],
       "outputs": [
-        {"name": "tokens", "type": "HEARTMULA_TOKENS", "links": [4], "slot_index": 0}
+        {
+          "name": "tokens",
+          "type": "HEARTMULA_TOKENS",
+          "links": [
+            4
+          ],
+          "slot_index": 0
+        }
       ],
-      "properties": {"Node name for S&R": "JKHeartMuLaMusicGenerator"},
-      "widgets_values": ["", "pop, upbeat, female vocals", 30.0, 0, "randomize", 1.0, 50, 1.5]
+      "properties": {
+        "Node name for S&R": "JKHeartMuLaMusicGenerator"
+      },
+      "widgets_values": [
+        "",
+        "pop, upbeat, female vocals",
+        30.0,
+        0,
+        "randomize",
+        1.0,
+        50,
+        1.5
+      ]
     },
     {
       "id": 6,
       "type": "JKHeartMuLaAudioDecoder",
-      "pos": [900, 200],
-      "size": [280, 70],
+      "pos": [
+        900,
+        200
+      ],
+      "size": [
+        280,
+        70
+      ],
       "flags": {},
       "order": 5,
       "mode": 0,
       "inputs": [
-        {"name": "tokens", "type": "HEARTMULA_TOKENS", "link": 4},
-        {"name": "codec", "type": "HEARTMULA_CODEC", "link": 5}
+        {
+          "name": "tokens",
+          "type": "HEARTMULA_TOKENS",
+          "link": 4
+        },
+        {
+          "name": "codec",
+          "type": "HEARTMULA_CODEC",
+          "link": 5
+        }
       ],
       "outputs": [
-        {"name": "AUDIO", "type": "AUDIO", "links": [6], "slot_index": 0}
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            6
+          ],
+          "slot_index": 0
+        }
       ],
-      "properties": {"Node name for S&R": "JKHeartMuLaAudioDecoder"},
+      "properties": {
+        "Node name for S&R": "JKHeartMuLaAudioDecoder"
+      },
       "widgets_values": []
     },
     {
       "id": 7,
       "type": "SaveAudio",
-      "pos": [1240, 200],
-      "size": [280, 100],
+      "pos": [
+        1240,
+        200
+      ],
+      "size": [
+        280,
+        100
+      ],
       "flags": {},
       "order": 6,
       "mode": 0,
       "inputs": [
-        {"name": "audio", "type": "AUDIO", "link": 6}
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 6
+        }
       ],
       "outputs": [],
-      "properties": {"Node name for S&R": "SaveAudio"},
-      "widgets_values": ["JK-HeartMuLa"]
+      "properties": {
+        "Node name for S&R": "SaveAudio"
+      },
+      "widgets_values": [
+        "JK-HeartMuLa"
+      ]
     }
   ],
   "links": [
-    [1, 1, 0, 4, 0, "JKHEARTMULA_MUQ"],
-    [2, 4, 0, 5, 1, "JKHEARTMULA_CMUQ"],
-    [3, 2, 0, 5, 0, "HEARTMULA_MODEL"],
-    [4, 5, 0, 6, 0, "HEARTMULA_TOKENS"],
-    [5, 3, 0, 6, 1, "HEARTMULA_CODEC"],
-    [6, 6, 0, 7, 0, "AUDIO"]
+    [
+      1,
+      1,
+      0,
+      4,
+      0,
+      "JKHEARTMULA_MUQ"
+    ],
+    [
+      2,
+      4,
+      0,
+      5,
+      1,
+      "JKHEARTMULA_CMUQ"
+    ],
+    [
+      3,
+      2,
+      0,
+      5,
+      0,
+      "HEARTMULA_MODEL"
+    ],
+    [
+      4,
+      5,
+      0,
+      6,
+      0,
+      "HEARTMULA_TOKENS"
+    ],
+    [
+      5,
+      3,
+      0,
+      6,
+      1,
+      "HEARTMULA_CODEC"
+    ],
+    [
+      6,
+      6,
+      0,
+      7,
+      0,
+      "AUDIO"
+    ]
   ],
   "groups": [],
   "config": {},

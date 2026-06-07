@@ -53,23 +53,7 @@ class JKHeartMuLaStyleEmbed(io.ComfyNode):
             category="JK-HeartMuLa",
             inputs=[
                 MUQ_TYPE.Input("muq_model"),
-                io.Combo.Input(
-                    "audio",
-                    upload=io.UploadType.audio,
-                    options=sorted(files),
-                    tooltip="Reference audio (drag-drop or upload). Ignored if the "
-                            "'audio_input' socket is connected.",
-                ),
-                io.Float.Input(
-                    "style_strength",
-                    default=1.0,
-                    min=0.0,
-                    max=10.0,
-                    step=0.05,
-                    display_mode=io.NumberDisplay.slider,
-                ),
-                # Appended after the original widgets (not inserted) so existing
-                # saved workflows keep their widget positions and still load.
+                # Toggles first for quick access at the top of the node.
                 io.Boolean.Input(
                     "enable",
                     default=True,
@@ -84,6 +68,21 @@ class JKHeartMuLaStyleEmbed(io.ComfyNode):
                             "so the HeartMuLa models have room to generate. No effect when MuQ "
                             "runs on CPU. It stays cached in RAM (no reload), and is moved back "
                             "to the chosen device automatically on the next embed.",
+                ),
+                io.Combo.Input(
+                    "audio",
+                    upload=io.UploadType.audio,
+                    options=sorted(files),
+                    tooltip="Reference audio (drag-drop or upload). Ignored if the "
+                            "'audio_input' socket is connected.",
+                ),
+                io.Float.Input(
+                    "style_strength",
+                    default=1.0,
+                    min=0.0,
+                    max=10.0,
+                    step=0.05,
+                    display_mode=io.NumberDisplay.slider,
                 ),
                 # Optional: feed reference audio from another node (Load Audio,
                 # Record Audio, a trimmed clip, generated audio...). Overrides the

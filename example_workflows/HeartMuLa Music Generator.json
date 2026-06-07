@@ -604,11 +604,10 @@
         "Node name for S&R": "JKHeartMuLaStyleEmbed"
       },
       "widgets_values": [
-        "",
-        1.0,
         true,
-        null,
-        null
+        true,
+        "",
+        1.0
       ],
       "color": "#223",
       "bgcolor": "#335"
