@@ -1,0 +1,906 @@
+{
+  "id": "6ad0fdfd-89b0-4486-a30d-77e15df2a3d5",
+  "revision": 0,
+  "last_node_id": 52,
+  "last_link_id": 68,
+  "nodes": [
+    {
+      "id": 25,
+      "type": "Note",
+      "pos": [
+        -2084.4703523665817,
+        -339.76314371735367
+      ],
+      "size": [
+        526.7374511544585,
+        352.1713269207967
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "Style Tags",
+      "properties": {},
+      "widgets_values": [
+        "Style Tags \u2014 Complete List (109 tags, 7 categories)\n\nGenre (28): pop, rock, jazz, electronic, classical, hip-hop, r&b, country, reggae, blues, folk, metal, punk, disco, funk, soul, indie, edm, house, techno, ambient, lo-fi, k-pop, j-pop, c-pop, latin, reggaeton, bossa nova\n\nMood (18): happy, sad, energetic, calm, romantic, melancholic, uplifting, dark, dreamy, aggressive, peaceful, nostalgic, hopeful, mysterious, playful, epic, chill, intense\n\nInstrument (20): piano, guitar, acoustic guitar, electric guitar, bass, drums, violin, cello, saxophone, trumpet, flute, synth, strings, orchestra, choir, 808, harp, organ, ukulele, harmonica\n\nTempo (8): slow, moderate, fast, very fast, ballad, uptempo, mid-tempo, groovy\n\nVocal (14): male vocal, female vocal, duet, choir, rap, whisper, powerful vocals, falsetto, soprano, baritone, tenor, alto, harmonies, a cappella\n\nEra (9): 80s, 90s, 2000s, modern, retro, vintage, 70s, 60s, futuristic\n\nProduction (12): cinematic, lo-fi, hi-fi, acoustic, electronic, live, studio, raw, polished, minimalist, layered, atmospheric\n\n\n"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 24,
+      "type": "Note",
+      "pos": [
+        -2077.44212618335,
+        -741.1382277236617
+      ],
+      "size": [
+        520.0494667094133,
+        362.1303020263879
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "Lyrical Sections",
+      "properties": {},
+      "widgets_values": [
+        "[Intro] [Verse] [Prechorus] [Chorus] [Bridge] [Outro] [Instrumental] [Break] [Solo] [Hook] [Rap] [Interlude]\n\n[Intro] \u2014 Opening section, usually instrumental or sparse vocals. Sets the sonic mood before the song proper begins. The model tends to generate something restrained here, building atmosphere.\n\n[Verse] \u2014 The main narrative sections. Lyrics tell the story, melody is typically lower-energy than the chorus. Each verse usually has different lyrics but the same melody.\n\n[Prechorus] \u2014 The build between verse and chorus. Energy ramps up, often melodically climbing toward the chorus drop. Sometimes called a \"pre-hook.\" Short \u2014 usually 2\u20134 lines.\n\n[Chorus] \u2014 The emotional peak and most repeated section. The model will generate the most energetic, melodically distinct content here. Your hook lives inside the chorus lyrically, but the marker itself tells the model to shift into high-energy mode.\n\n[Hook] \u2014 In songwriting, a hook is the catchy repeated melodic/lyrical idea \u2014 it's a component of a chorus, not a separate section type. Generally: write your hook lines inside a [Chorus] block rather than tagging it separately.\n\n[Bridge] \u2014 A contrasting section that breaks the verse/chorus repetition, usually appearing once near the end. Different melody, often different emotional angle. Keeps the song from feeling repetitive.\n\n[Rap] \u2014 Signals rhythmic spoken/flow vocals rather than sung melody. The model should shift to a rhythmic cadence. Works best with lyrics that have natural rhythmic structure \u2014 short punchy lines, consistent syllable counts per bar.\n\n[Interlude] \u2014 A transitional section between larger parts. Can be instrumental or lightly vocal. More deliberate than a break \u2014 often has its own melodic character.\n\n[Break] \u2014 A brief drop in density, often just drums or a single element. Creates tension before a section kicks back in. Usually very short (4\u20138 bars).\n\n[Solo] \u2014 Signals an instrumental lead moment \u2014 guitar solo, synth lead, etc. Feed it minimal or no lyrics; the model should generate an instrumental passage with a prominent melodic instrument.\n\n[Outro] \u2014 Closing section, mirrors the intro energy-wise. Usually fades or resolves the song. Can be instrumental or a final vocal statement.\n\n[Instrumental] \u2014 Any section with no vocals at all. More general than Solo or Break \u2014 use this when you want a longer instrumental passage without implying a specific energy level.\nPractical ordering for a typical song:\n[Intro] \u2192 [Verse] \u2192 [Prechorus] \u2192 [Chorus] \u2192 [Verse] \u2192 [Prechorus] \u2192 [Chorus] \u2192 [Bridge] \u2192 [Chorus] \u2192 [Outro]"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 43,
+      "type": "JKHeartMuLaModelLoader",
+      "pos": [
+        -1509.4542696508993,
+        -604.0993481053645
+      ],
+      "size": [
+        381.41718364396706,
+        178
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "base_path",
+          "name": "base_path",
+          "type": "STRING",
+          "widget": {
+            "name": "base_path"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "model_version",
+          "name": "model_version",
+          "type": "COMBO",
+          "widget": {
+            "name": "model_version"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "torch_compile",
+          "name": "torch_compile",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "torch_compile"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "compile_backend",
+          "name": "compile_backend",
+          "type": "COMBO",
+          "widget": {
+            "name": "compile_backend"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "compile_mode",
+          "name": "compile_mode",
+          "type": "COMBO",
+          "widget": {
+            "name": "compile_mode"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "model",
+          "name": "model",
+          "type": "HEARTMULA_MODEL",
+          "links": [
+            60
+          ]
+        }
+      ],
+      "properties": {
+        "aux_id": "Crono141/ComfyUI-JK-HeartMuLa",
+        "ver": "15f7df38d9ace5b7b6aa46f3b7b57cee6566e27c",
+        "Node name for S&R": "JKHeartMuLaModelLoader"
+      },
+      "widgets_values": [
+        "HeartMuLa",
+        "HeartMuLa-oss-3B-happy-new-year",
+        false,
+        "inductor",
+        "default",
+        null
+      ],
+      "color": "#233",
+      "bgcolor": "#355"
+    },
+    {
+      "id": 45,
+      "type": "JKHeartMuLaAudioDecoder",
+      "pos": [
+        -646.0816853144554,
+        -603.9982139784199
+      ],
+      "size": [
+        217.025,
+        46
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "tokens",
+          "name": "tokens",
+          "type": "HEARTMULA_TOKENS",
+          "link": 59
+        },
+        {
+          "localized_name": "codec",
+          "name": "codec",
+          "type": "HEARTMULA_CODEC",
+          "link": 57
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "AUDIO",
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            62
+          ]
+        }
+      ],
+      "properties": {
+        "aux_id": "Crono141/ComfyUI-JK-HeartMuLa",
+        "ver": "15f7df38d9ace5b7b6aa46f3b7b57cee6566e27c",
+        "Node name for S&R": "JKHeartMuLaAudioDecoder"
+      },
+      "widgets_values": [],
+      "color": "#2a363b",
+      "bgcolor": "#3f5159"
+    },
+    {
+      "id": 47,
+      "type": "JKHeartMuLaMuQModelLoader",
+      "pos": [
+        -1398.6953335896715,
+        62.39292824109107
+      ],
+      "size": [
+        245.25000610351563,
+        26
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "localized_name": "muq_model",
+          "name": "muq_model",
+          "type": "JKHEARTMULA_MUQ",
+          "links": [
+            64
+          ]
+        }
+      ],
+      "properties": {
+        "aux_id": "Crono141/ComfyUI-JK-HeartMuLa",
+        "ver": "15f7df38d9ace5b7b6aa46f3b7b57cee6566e27c",
+        "Node name for S&R": "JKHeartMuLaMuQModelLoader"
+      },
+      "widgets_values": [],
+      "color": "#233",
+      "bgcolor": "#355"
+    },
+    {
+      "id": 51,
+      "type": "JKHeartMuLaTagsBuilder",
+      "pos": [
+        -1526.9324990790053,
+        -343.1933595377763
+      ],
+      "size": [
+        401.0118100259733,
+        362.24653750123207
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "genre",
+          "name": "genre",
+          "type": "STRING",
+          "widget": {
+            "name": "genre"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "mood",
+          "name": "mood",
+          "type": "STRING",
+          "widget": {
+            "name": "mood"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "instrument",
+          "name": "instrument",
+          "type": "STRING",
+          "widget": {
+            "name": "instrument"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "tempo",
+          "name": "tempo",
+          "type": "COMBO",
+          "widget": {
+            "name": "tempo"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "vocal",
+          "name": "vocal",
+          "type": "STRING",
+          "widget": {
+            "name": "vocal"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "era",
+          "name": "era",
+          "type": "COMBO",
+          "widget": {
+            "name": "era"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "production",
+          "name": "production",
+          "type": "STRING",
+          "widget": {
+            "name": "production"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "additional_tags",
+          "name": "additional_tags",
+          "shape": 7,
+          "type": "STRING",
+          "widget": {
+            "name": "additional_tags"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "tags",
+          "name": "tags",
+          "type": "STRING",
+          "links": [
+            67
+          ]
+        }
+      ],
+      "properties": {
+        "aux_id": "Crono141/ComfyUI-JK-HeartMuLa",
+        "ver": "15f7df38d9ace5b7b6aa46f3b7b57cee6566e27c",
+        "Node name for S&R": "JKHeartMuLaTagsBuilder"
+      },
+      "widgets_values": [
+        "",
+        "",
+        "",
+        "none",
+        "",
+        "none",
+        "",
+        ""
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 41,
+      "type": "JKHeartMuLaCodecLoader",
+      "pos": [
+        -670.0944903789779,
+        -508.4430962099575
+      ],
+      "size": [
+        271.67499389648435,
+        106
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "base_path",
+          "name": "base_path",
+          "type": "STRING",
+          "widget": {
+            "name": "base_path"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "codec_version",
+          "name": "codec_version",
+          "type": "COMBO",
+          "widget": {
+            "name": "codec_version"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "codec",
+          "name": "codec",
+          "type": "HEARTMULA_CODEC",
+          "links": [
+            57
+          ]
+        }
+      ],
+      "properties": {
+        "aux_id": "Crono141/ComfyUI-JK-HeartMuLa",
+        "ver": "15f7df38d9ace5b7b6aa46f3b7b57cee6566e27c",
+        "Node name for S&R": "JKHeartMuLaCodecLoader"
+      },
+      "widgets_values": [
+        "HeartMuLa",
+        "HeartCodec-oss-20260123",
+        null
+      ],
+      "color": "#233",
+      "bgcolor": "#355"
+    },
+    {
+      "id": 48,
+      "type": "JKHeartMuLaMusicGenerator",
+      "pos": [
+        -1108.7597301007477,
+        -604.7634749746569
+      ],
+      "size": [
+        408.08080808080786,
+        634.6195080689678
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "model",
+          "name": "model",
+          "type": "HEARTMULA_MODEL",
+          "link": 60
+        },
+        {
+          "localized_name": "cmuq",
+          "name": "cmuq",
+          "shape": 7,
+          "type": "JKHEARTMULA_CMUQ",
+          "link": 65
+        },
+        {
+          "localized_name": "lyrics",
+          "name": "lyrics",
+          "type": "STRING",
+          "widget": {
+            "name": "lyrics"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "tags",
+          "name": "tags",
+          "type": "STRING",
+          "widget": {
+            "name": "tags"
+          },
+          "link": 67
+        },
+        {
+          "localized_name": "duration_seconds",
+          "name": "duration_seconds",
+          "type": "FLOAT",
+          "widget": {
+            "name": "duration_seconds"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "seed",
+          "name": "seed",
+          "type": "INT",
+          "widget": {
+            "name": "seed"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "temperature",
+          "name": "temperature",
+          "type": "FLOAT",
+          "widget": {
+            "name": "temperature"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "top_k",
+          "name": "top_k",
+          "type": "INT",
+          "widget": {
+            "name": "top_k"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "cfg_scale",
+          "name": "cfg_scale",
+          "type": "FLOAT",
+          "widget": {
+            "name": "cfg_scale"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "tokens",
+          "name": "tokens",
+          "type": "HEARTMULA_TOKENS",
+          "links": [
+            59
+          ]
+        }
+      ],
+      "properties": {
+        "aux_id": "Crono141/ComfyUI-JK-HeartMuLa",
+        "ver": "15f7df38d9ace5b7b6aa46f3b7b57cee6566e27c",
+        "Node name for S&R": "JKHeartMuLaMusicGenerator"
+      },
+      "widgets_values": [
+        "",
+        "",
+        30.0,
+        0,
+        "randomize",
+        1.0,
+        50,
+        1.5
+      ],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 49,
+      "type": "JKHeartMuLaStyleEmbed",
+      "pos": [
+        -1094.7123076338949,
+        110.58331722714
+      ],
+      "size": [
+        270,
+        204
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "muq_model",
+          "name": "muq_model",
+          "type": "JKHEARTMULA_MUQ",
+          "link": 64
+        },
+        {
+          "localized_name": "audio_input",
+          "name": "audio_input",
+          "shape": 7,
+          "type": "AUDIO",
+          "link": 66
+        },
+        {
+          "localized_name": "audio",
+          "name": "audio",
+          "type": "COMBO",
+          "widget": {
+            "name": "audio"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "style_strength",
+          "name": "style_strength",
+          "type": "FLOAT",
+          "widget": {
+            "name": "style_strength"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "enable",
+          "name": "enable",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "enable"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "audioUI",
+          "name": "audioUI",
+          "type": "AUDIO_UI",
+          "widget": {
+            "name": "audioUI"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "upload",
+          "name": "upload",
+          "type": "AUDIOUPLOAD",
+          "widget": {
+            "name": "upload"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "cmuq",
+          "name": "cmuq",
+          "type": "JKHEARTMULA_CMUQ",
+          "links": [
+            65
+          ]
+        }
+      ],
+      "properties": {
+        "aux_id": "Crono141/ComfyUI-JK-HeartMuLa",
+        "ver": "15f7df38d9ace5b7b6aa46f3b7b57cee6566e27c",
+        "Node name for S&R": "JKHeartMuLaStyleEmbed"
+      },
+      "widgets_values": [
+        "",
+        1.0,
+        true,
+        null,
+        null
+      ],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 50,
+      "type": "LoadAudio",
+      "pos": [
+        -1427.769141277547,
+        135.42191791094066
+      ],
+      "size": [
+        282.8249969482422,
+        136
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "audio",
+          "name": "audio",
+          "type": "COMBO",
+          "widget": {
+            "name": "audio"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "audioUI",
+          "name": "audioUI",
+          "type": "AUDIO_UI",
+          "widget": {
+            "name": "audioUI"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "choose file to upload",
+          "name": "upload",
+          "type": "AUDIOUPLOAD",
+          "widget": {
+            "name": "upload"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "AUDIO",
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            66
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.21.1",
+        "Node name for S&R": "LoadAudio"
+      },
+      "widgets_values": [
+        "",
+        null,
+        null
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 52,
+      "type": "PreviewAudio",
+      "pos": [
+        -644.4637912263407,
+        -295.83149062102774
+      ],
+      "size": [
+        270,
+        88
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "audio",
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 68
+        },
+        {
+          "localized_name": "audioUI",
+          "name": "audioUI",
+          "type": "AUDIO_UI",
+          "widget": {
+            "name": "audioUI"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.21.1",
+        "Node name for S&R": "PreviewAudio"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 46,
+      "type": "JKHeartMuLaPostProcessor",
+      "pos": [
+        -364.79567531802,
+        -595.6512754039179
+      ],
+      "size": [
+        270,
+        154
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 4,
+      "inputs": [
+        {
+          "localized_name": "audio",
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 62
+        },
+        {
+          "localized_name": "normalize",
+          "name": "normalize",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "normalize"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "stereo_width",
+          "name": "stereo_width",
+          "type": "FLOAT",
+          "widget": {
+            "name": "stereo_width"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "high_pass",
+          "name": "high_pass",
+          "type": "INT",
+          "widget": {
+            "name": "high_pass"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "low_pass",
+          "name": "low_pass",
+          "type": "INT",
+          "widget": {
+            "name": "low_pass"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "gain_db",
+          "name": "gain_db",
+          "type": "FLOAT",
+          "widget": {
+            "name": "gain_db"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "AUDIO",
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            68
+          ]
+        }
+      ],
+      "properties": {
+        "aux_id": "Crono141/ComfyUI-JK-HeartMuLa",
+        "ver": "15f7df38d9ace5b7b6aa46f3b7b57cee6566e27c",
+        "Node name for S&R": "JKHeartMuLaPostProcessor"
+      },
+      "widgets_values": [
+        true,
+        1.0,
+        80,
+        18000,
+        0.0
+      ]
+    }
+  ],
+  "links": [
+    [
+      57,
+      41,
+      0,
+      45,
+      1,
+      "HEARTMULA_CODEC"
+    ],
+    [
+      59,
+      48,
+      0,
+      45,
+      0,
+      "HEARTMULA_TOKENS"
+    ],
+    [
+      60,
+      43,
+      0,
+      48,
+      0,
+      "HEARTMULA_MODEL"
+    ],
+    [
+      62,
+      45,
+      0,
+      46,
+      0,
+      "AUDIO"
+    ],
+    [
+      64,
+      47,
+      0,
+      49,
+      0,
+      "JKHEARTMULA_MUQ"
+    ],
+    [
+      65,
+      49,
+      0,
+      48,
+      1,
+      "JKHEARTMULA_CMUQ"
+    ],
+    [
+      66,
+      50,
+      0,
+      49,
+      1,
+      "AUDIO"
+    ],
+    [
+      67,
+      51,
+      0,
+      48,
+      3,
+      "STRING"
+    ],
+    [
+      68,
+      46,
+      0,
+      52,
+      0,
+      "AUDIO"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "workflowRendererVersion": "LG",
+    "ue_links": [],
+    "ds": {
+      "scale": 0.6588450000000071,
+      "offset": [
+        1731.7200867487018,
+        905.4842260810166
+      ]
+    },
+    "links_added_by_ue": [],
+    "frontendVersion": "1.37.11",
+    "VHS_latentpreview": false,
+    "VHS_latentpreviewrate": 0,
+    "VHS_MetadataImage": true,
+    "VHS_KeepIntermediate": true
+  },
+  "version": 0.4
+}

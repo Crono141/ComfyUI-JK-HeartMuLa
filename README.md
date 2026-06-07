@@ -76,6 +76,8 @@ HeartMuLa Loader ─────────────────────
 HeartMuLa Codec Loader ───────────────────────► HeartMuLa Audio Decoder → Save Audio (→ media assets)
 ```
 
+Recommended starting point: **`HeartMuLa Music Generator.json`** — the full default workflow (Tag Builder → Music Generator with style transfer → Audio Decoder → Post-Processor → Preview, plus MuQ Loader / Style Embed / Load Audio), all fields at defaults.
+
 Also included: `HeartMuLaGeneration.json` (plain generation) and `HeartMuLaTranscription.json` (lyrics transcription).
 
 ## Credits & license
