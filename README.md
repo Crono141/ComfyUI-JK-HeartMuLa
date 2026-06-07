@@ -4,11 +4,15 @@
 
 ![JK-HeartMuLa workflow](assets/workflow-overview.png)
 
-A fork of [BobRandomNumber/ComfyUI-HeartMuLa](https://github.com/BobRandomNumber/ComfyUI-HeartMuLa) (Apache-2.0) that adds the ability to condition HeartMuLa music generation on the *style* of a reference track — its genre, mood, and instrumentation — via a MuQ-MuLan audio embedding. It bundles the full HeartMuLa toolset (loaders, generator, decoder, post-processor, lyrics transcription) so it works as a complete, standalone pack.
+A fork of [BobRandomNumber/ComfyUI-HeartMuLa](https://github.com/BobRandomNumber/ComfyUI-HeartMuLa) (Apache-2.0) that adds MuQ-MuLan reference-audio style conditioning to HeartMuLa music generation. It bundles the full HeartMuLa toolset (loaders, generator, decoder, post-processor, lyrics transcription) so it works as a complete, standalone pack.
+
+> **Heads-up: the style-transfer feature is experimental / research-only.** In practice, **generating with tags alone gives the best results.** The MuQ-MuLan style node is included to expose the capability for experimentation — it does not reliably improve output. The bundled default workflow ships with it **disabled**. See [What style transfer does (and doesn't)](#what-style-transfer-does-and-doesnt--read-this) below before using it.
 
 All node ids use the `JKHeartMuLa*` prefix and live under the **`JK-HeartMuLa`** category, so this pack installs **alongside** the original ComfyUI-HeartMuLa (or other HeartMuLa packs) without conflicts.
 
 ## What style transfer does (and doesn't) — read this
+
+**This feature is experimental / research-only — tag-only generation gives the best results.** It's exposed so others can explore it, not because it improves output. The HeartMuLa authors themselves ship the embedding **disabled by default** (heartlib hardcodes it to zeros), describe it as *"a global stylistic cue,"* drop it 50% of the time in training, and deliberately strip voice/timbre from it (*"MuQ-MuLan does not include any speaker timbre information"* — paper §). In our own testing, a tag-only generation matched a reference's tempo/energy/brightness **better than any style-transfer setting did.**
 
 MuQ-MuLan turns the whole reference clip into a **single global genre/mood/instrumentation vector**. In practice that makes it behave more like **an alternative way to specify tags than a precise style clone or an enhancer on top of tags** — set expectations accordingly:
 

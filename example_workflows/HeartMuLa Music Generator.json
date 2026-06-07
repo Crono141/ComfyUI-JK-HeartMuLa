@@ -604,7 +604,7 @@
         "Node name for S&R": "JKHeartMuLaStyleEmbed"
       },
       "widgets_values": [
-        true,
+        false,
         true,
         true,
         "",
