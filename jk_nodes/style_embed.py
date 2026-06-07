@@ -137,7 +137,9 @@ class JKHeartMuLaStyleEmbed(io.ComfyNode):
         with torch.no_grad():
             embedding = cls._embed_with_progress(muq_model, wav_t)
 
-        embedding = embedding.squeeze(0).to(torch.bfloat16)  # [512]
+        # Return a small CPU bfloat16 vector regardless of where MuQ ran; the
+        # generator moves it onto the generation device as needed.
+        embedding = embedding.squeeze(0).to(device="cpu", dtype=torch.bfloat16)  # [512]
         embedding = embedding * style_strength
 
         print(f"[JK-HeartMuLa] Style embedding extracted, strength={style_strength}")
@@ -155,17 +157,23 @@ class JKHeartMuLaStyleEmbed(io.ComfyNode):
         """
         import comfy.utils
 
+        # Run the encoder on whichever device the MuQ model is loaded on.
+        try:
+            dev = next(muq_model.parameters()).device
+        except StopIteration:
+            dev = torch.device("cpu")
+
         try:
             clips = muq_model._get_all_clips(wav_t)  # [n_clips, clip_samples]
             n_clips = int(clips.shape[0])
             pbar = comfy.utils.ProgressBar(n_clips)
             latents = []
             for i in range(n_clips):
-                clip = clips[i].unsqueeze(0)  # [1, clip_samples]
+                clip = clips[i].unsqueeze(0).to(dev)  # [1, clip_samples]
                 latents.append(muq_model.mulan_module.get_audio_latents(clip).squeeze(0))
                 pbar.update(1)
             return torch.stack(latents, dim=0).mean(dim=0).unsqueeze(0)  # [1, 512]
         except Exception as e:
             print(f"[JK-HeartMuLa] Per-clip progress unavailable ({e}); "
                   f"falling back to one-shot embedding.")
-            return muq_model(wavs=wav_t.unsqueeze(0))  # [1, 512]
+            return muq_model(wavs=wav_t.unsqueeze(0).to(dev))  # [1, 512]

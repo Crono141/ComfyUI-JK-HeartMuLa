@@ -80,7 +80,7 @@ The MuQ-MuLan style model (`OpenMuQ/MuQ-MuLan-large`, ~2.5 GB) is the one except
 
 **New in this fork:**
 - **HeartMuLa Tag Builder** — per-category fields (genre / mood / instrument / vocal / production free-text with tag-suggestion tooltips; tempo / era dropdowns) plus a **multiline** `additional_tags` box. Lowercases, de-dupes, and comma-joins into a single `tags` string for the Music Generator. (Original implementation; concept inspired by RT-HeartMuLa.)
-- **HeartMuLa MuQ Model Loader** — loads `OpenMuQ/MuQ-MuLan-large` on CPU (~2.5 GB RAM, no VRAM). Singleton; loads once per session.
+- **HeartMuLa MuQ Model Loader** — loads `OpenMuQ/MuQ-MuLan-large` for style embedding. Singleton; loads once per session. A **`device`** switch runs it on **cpu** (~2.5 GB RAM, no VRAM — default) or **gpu** (faster embedding, but holds ~2.5 GB VRAM resident — it isn't freed between runs and competes with generation). Style Embed runs on whichever device is selected.
 - **HeartMuLa Style Embed** — produces the 512-D style embedding from a reference clip (24 kHz mono), with a per-clip progress bar.
   - **`enable` toggle** — flip style transfer on/off with a single switch. When off, it outputs a zero embedding (the Music Generator then runs tag-only, identical to `style_strength = 0`) and skips all audio + MuQ work — so one switch toggles a shared workflow between styled and tag-only without rewiring.
   - **Reference input** — drag an audio file onto the node / use the upload button (stored in ComfyUI's `input/`), **or** wire the optional **`audio_input` socket** from any AUDIO source (Load Audio, Record Audio, a trimmed clip, generated audio…). The socket wins when connected.
@@ -97,7 +97,15 @@ Also included: `style_transfer_basic.json` (minimal style-transfer graph), `Hear
 ## Notes
 
 - **Reference audio that errors in Load Audio:** core Load Audio decodes with PyAV, which rejects some malformed MP3s (`avcodec_send_packet()` / "Invalid data"). The Style Embed node's own upload widget uses librosa (more tolerant) — drag the file straight onto Style Embed, or re-encode it to WAV/FLAC.
-- **torch_compile:** the `inductor` backend is the most reliable; `cudagraphs` can log harmless `unexpected keyword argument 'mode'` warnings on some torch builds (it falls back to eager).
+
+### torch_compile (HeartMuLa Loader)
+
+`torch.compile` JIT-compiles the model into fused kernels to cut Python dispatch and GPU launch overhead — the **first** run is slower (it compiles), later runs are faster. It's optional and **off by default**: it needs a matching Triton/CUDA toolchain and is wrapped in `suppress_errors`, so it falls back to eager if compilation fails.
+
+- **compile_backend** — `inductor` (default; generates fused Triton/C++ kernels; most reliable), `cudagraphs` (CUDA-graph capture; can log a harmless `unexpected keyword argument 'mode'` warning on some torch builds), or `eager` (no compilation, the baseline).
+- **compile_mode** — `default` (compile + fuse, quick to build), `reduce-overhead` (adds CUDA graphs to cut per-step launch overhead; uses more memory), `max-autotune` (benchmarks kernel variants for top speed; **much** longer first compile).
+
+Reliable combo: `inductor` + `default`. For heavy/repeated use where a long first compile is acceptable: `inductor` + `max-autotune`.
 
 ## Credits & license
 
