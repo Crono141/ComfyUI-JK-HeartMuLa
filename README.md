@@ -85,6 +85,7 @@ The MuQ-MuLan style model (`OpenMuQ/MuQ-MuLan-large`, ~2.5 GB) is the one except
   - **`enable` toggle** — flip style transfer on/off with a single switch. When off, it outputs a zero embedding (the Music Generator then runs tag-only, identical to `style_strength = 0`) and skips all audio + MuQ work — so one switch toggles a shared workflow between styled and tag-only without rewiring.
   - **Reference input** — drag an audio file onto the node / use the upload button (stored in ComfyUI's `input/`), **or** wire the optional **`audio_input` socket** from any AUDIO source (Load Audio, Record Audio, a trimmed clip, generated audio…). The socket wins when connected.
   - **`style_strength`** (0–10) scales influence: `0` = off, `1.0` = natural, higher = stronger (and eventually unstable).
+  - **`free_vram_after`** (default on) — after embedding, offloads MuQ-MuLan back to CPU and frees its VRAM so the HeartMuLa models have room to generate. No effect when MuQ runs on CPU. The model stays cached in RAM (no reload) and is moved back to the chosen device automatically on the next embed. Pair with the loader's `device = gpu` for fast embedding without holding VRAM through generation.
 
 ## Example workflow
 

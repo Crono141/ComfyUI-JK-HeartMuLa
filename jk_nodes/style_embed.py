@@ -30,7 +30,7 @@ import torch
 import folder_paths
 from comfy_api.latest import io
 
-from .muq_loader import MUQ_TYPE
+from .muq_loader import MUQ_TYPE, ensure_on_desired_device, offload_muq
 
 # Custom socket type for the style embedding. Matches the optional input type on
 # HeartMuLa Music Generator.
@@ -77,6 +77,14 @@ class JKHeartMuLaStyleEmbed(io.ComfyNode):
                             "identical to style_strength = 0. Lets a single switch toggle "
                             "style transfer on/off in a shared workflow without rewiring.",
                 ),
+                io.Boolean.Input(
+                    "free_vram_after",
+                    default=True,
+                    tooltip="After embedding, offload MuQ-MuLan back to CPU and free its VRAM "
+                            "so the HeartMuLa models have room to generate. No effect when MuQ "
+                            "runs on CPU. It stays cached in RAM (no reload), and is moved back "
+                            "to the chosen device automatically on the next embed.",
+                ),
                 # Optional: feed reference audio from another node (Load Audio,
                 # Record Audio, a trimmed clip, generated audio...). Overrides the
                 # uploaded file when connected.
@@ -86,11 +94,12 @@ class JKHeartMuLaStyleEmbed(io.ComfyNode):
         )
 
     @classmethod
-    def fingerprint_inputs(cls, audio=None, style_strength=1.0, enable=True, **kwargs) -> str:
-        # Re-run when the toggle, strength, or uploaded file content changes.
-        # (Changes to a connected `audio_input` socket are detected via the normal
-        # input graph.)
-        base = f"{style_strength}:{enable}"
+    def fingerprint_inputs(cls, audio=None, style_strength=1.0, enable=True,
+                           free_vram_after=True, **kwargs) -> str:
+        # Re-run when any toggle, the strength, or the uploaded file content
+        # changes. (Changes to a connected `audio_input` socket are detected via
+        # the normal input graph.)
+        base = f"{style_strength}:{enable}:{free_vram_after}"
         try:
             path = folder_paths.get_annotated_filepath(audio)
             m = hashlib.sha256()
@@ -101,13 +110,20 @@ class JKHeartMuLaStyleEmbed(io.ComfyNode):
             return f"{audio}:{base}"
 
     @classmethod
-    def execute(cls, muq_model, audio, style_strength, enable=True, audio_input=None) -> io.NodeOutput:
+    def execute(cls, muq_model, audio, style_strength, enable=True,
+                free_vram_after=True, audio_input=None) -> io.NodeOutput:
         # When disabled, emit a zero embedding (no style transfer) and skip all
         # audio loading / MuQ work -- a single switch to toggle style in a shared
         # workflow. Equivalent to style_strength = 0.
         if not enable:
             print("[JK-HeartMuLa] Style Embed disabled -> zero embedding (no style transfer)")
+            if free_vram_after:
+                offload_muq()
             return io.NodeOutput(torch.zeros(MUQ_EMBED_DIM, dtype=torch.bfloat16))
+
+        # Make sure MuQ is on its selected device (it may have been offloaded to
+        # CPU after a previous run).
+        muq_model = ensure_on_desired_device() or muq_model
 
         # Resolve the reference waveform to a 24 kHz mono 1-D tensor. A connected
         # audio_input socket takes priority over the uploaded file.
@@ -143,6 +159,11 @@ class JKHeartMuLaStyleEmbed(io.ComfyNode):
         embedding = embedding * style_strength
 
         print(f"[JK-HeartMuLa] Style embedding extracted, strength={style_strength}")
+
+        # Free MuQ's VRAM for generation (no-op if it ran on CPU).
+        if free_vram_after:
+            offload_muq()
+
         return io.NodeOutput(embedding)
 
     @staticmethod
