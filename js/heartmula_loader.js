@@ -49,6 +49,40 @@ app.registerExtension({
     },
 });
 
+// Music Generator: pin the "tags" textarea to ~4 lines so extra vertical height
+// flows to the (usually much longer) "lyrics" field instead of being split
+// evenly. ComfyUI sizes widgets from computeLayoutSize().minHeight and lets
+// multiline textareas flex up to maxHeight; setting min == max stops "tags" from
+// growing. We wrap the original method so other layout fields are preserved.
+app.registerExtension({
+    name: "JKHeartMuLa.TagsHeightClamp",
+    nodeCreated(node) {
+        const cls = node?.comfyClass ?? node?.type;
+        if (cls !== "JKHeartMuLaMusicGenerator") return;
+        const w = (node.widgets || []).find((x) => x.name === "tags");
+        if (!w) return;
+
+        const TAGS_LINES = 4;
+        const EL_H = TAGS_LINES * 20 + 12; // textarea height (~4 lines)
+        const PAD = 10;                    // gap below so it clears the sliders
+        const LAYOUT_H = EL_H + PAD;       // reserve extra height in the node layout
+
+        const origLayout = w.computeLayoutSize ? w.computeLayoutSize.bind(w) : null;
+        w.computeLayoutSize = (n) => {
+            const base = origLayout ? origLayout(n) : {};
+            return { ...base, minHeight: LAYOUT_H, maxHeight: LAYOUT_H };
+        };
+        // Fallback for the older sizing path.
+        w.computeSize = (width) => [width, LAYOUT_H];
+
+        const el = w.element || w.inputEl;
+        if (el) {
+            el.style.minHeight = EL_H + "px";
+            el.style.maxHeight = EL_H + "px";
+        }
+    },
+});
+
 async function showFolderPicker(onSelect) {
     let currentPath = "";
     
