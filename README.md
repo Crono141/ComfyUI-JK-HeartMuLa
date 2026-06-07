@@ -8,9 +8,17 @@ A fork of [BobRandomNumber/ComfyUI-HeartMuLa](https://github.com/BobRandomNumber
 
 All node ids use the `JKHeartMuLa*` prefix and live under the **`JK-HeartMuLa`** category, so this pack installs **alongside** the original ComfyUI-HeartMuLa (or other HeartMuLa packs) without conflicts.
 
-## What style transfer does (and doesn't)
+## What style transfer does (and doesn't) — read this
 
-It captures **genre, mood, and instrumentation** from the reference audio. It does **not** clone voice timbre or melody — MuQ-MuLan produces a single global style embedding, not a time-aligned one.
+MuQ-MuLan turns the whole reference clip into a **single global genre/mood/instrumentation vector**. In practice that makes it behave more like **an alternative way to specify tags than a precise style clone or an enhancer on top of tags** — set expectations accordingly:
+
+- ✅ It **nudges the overall genre / mood / instrumentation** toward the reference.
+- ❌ It does **not** reliably transfer **tempo, loudness/energy, or spectral balance (brightness)** — those are emergent from generation and tend to drift (often quieter/darker), and no setting fully controls them.
+- ❌ It does **not** clone voice, melody, or groove, and it is **not** a continuation engine — it won't seamlessly extend a clip.
+- ⚠️ If the reference's genre already matches your text tags, it **adds little** — tags alone usually get you closest — and can even drift the sound *away* from the reference. In testing, a tag-only generation matched a techno reference's tempo/energy/brightness *better* than any style-transfer setting did.
+- 👍 It helps most when the reference conveys a **vibe your tags can't easily put into words**. Treat it as a loose anchor used **alongside or instead of** tags, not a high-fidelity copy.
+
+Best behavior: `style_strength` ~1.0 with `normalize` on. Over-driving (higher strength) destabilizes output (short, subdued).
 
 ## Installation
 
