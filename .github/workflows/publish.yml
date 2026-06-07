@@ -1,5 +1,11 @@
 name: Publish to Comfy registry
 
+# Opt JS actions into Node 24 now (checkout + the publish action's internal
+# setup-python still ship Node 20 until upstream updates them; Node 24 becomes
+# the GitHub Actions default on 2026-06-16, after which this is a no-op).
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 # Publishes this pack to the ComfyUI Registry (registry.comfy.org), which
 # ComfyUI-Manager ingests. Runs on a pyproject.toml change (e.g. a version bump)
 # or manually from the Actions tab. Requires a repo secret REGISTRY_ACCESS_TOKEN
