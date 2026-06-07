@@ -69,6 +69,14 @@ class JKHeartMuLaStyleEmbed(io.ComfyNode):
                             "runs on CPU. It stays cached in RAM (no reload), and is moved back "
                             "to the chosen device automatically on the next embed.",
                 ),
+                io.Boolean.Input(
+                    "normalize",
+                    default=True,
+                    tooltip="Re-normalize the reference embedding to unit length before applying "
+                            "style_strength, so the strength is consistent regardless of reference "
+                            "length. (MuQ averages 10s clips, so a longer reference otherwise "
+                            "yields a weaker vector.) Recommended on.",
+                ),
                 io.Combo.Input(
                     "audio",
                     upload=io.UploadType.audio,
@@ -80,9 +88,11 @@ class JKHeartMuLaStyleEmbed(io.ComfyNode):
                     "style_strength",
                     default=1.0,
                     min=0.0,
-                    max=10.0,
-                    step=0.05,
-                    display_mode=io.NumberDisplay.slider,
+                    max=2.0,
+                    step=0.01,
+                    tooltip="Style influence. 0 = off (no style), 1.0 = natural/calibrated, "
+                            ">1 over-drives (can destabilize -- short/subdued output). Drag or "
+                            "type a value.",
                 ),
                 # Optional: feed reference audio from another node (Load Audio,
                 # Record Audio, a trimmed clip, generated audio...). Overrides the
@@ -94,11 +104,11 @@ class JKHeartMuLaStyleEmbed(io.ComfyNode):
 
     @classmethod
     def fingerprint_inputs(cls, audio=None, style_strength=1.0, enable=True,
-                           free_vram_after=True, **kwargs) -> str:
+                           free_vram_after=True, normalize=True, **kwargs) -> str:
         # Re-run when any toggle, the strength, or the uploaded file content
         # changes. (Changes to a connected `audio_input` socket are detected via
         # the normal input graph.)
-        base = f"{style_strength}:{enable}:{free_vram_after}"
+        base = f"{style_strength}:{enable}:{free_vram_after}:{normalize}"
         try:
             path = folder_paths.get_annotated_filepath(audio)
             m = hashlib.sha256()
@@ -110,7 +120,7 @@ class JKHeartMuLaStyleEmbed(io.ComfyNode):
 
     @classmethod
     def execute(cls, muq_model, audio, style_strength, enable=True,
-                free_vram_after=True, audio_input=None) -> io.NodeOutput:
+                free_vram_after=True, normalize=True, audio_input=None) -> io.NodeOutput:
         # When disabled, emit a zero embedding (no style transfer) and skip all
         # audio loading / MuQ work -- a single switch to toggle style in a shared
         # workflow. Equivalent to style_strength = 0.
@@ -152,10 +162,14 @@ class JKHeartMuLaStyleEmbed(io.ComfyNode):
         with torch.no_grad():
             embedding = cls._embed_with_progress(muq_model, wav_t)
 
-        # Return a small CPU bfloat16 vector regardless of where MuQ ran; the
-        # generator moves it onto the generation device as needed.
-        embedding = embedding.squeeze(0).to(device="cpu", dtype=torch.bfloat16)  # [512]
-        embedding = embedding * style_strength
+        # Return a small CPU vector regardless of where MuQ ran; the generator
+        # moves it onto the generation device as needed.
+        embedding = embedding.squeeze(0).float().cpu()  # [512] float32
+        if normalize:
+            # Unit-length so style_strength is consistent regardless of reference
+            # length (MuQ averages 10s clips -> longer refs have smaller norm).
+            embedding = embedding / embedding.norm().clamp_min(1e-8)
+        embedding = (embedding * style_strength).to(torch.bfloat16)
 
         print(f"[JK-HeartMuLa] Style embedding extracted, strength={style_strength}")
 
